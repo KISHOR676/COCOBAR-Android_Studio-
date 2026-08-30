@@ -8,6 +8,8 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.DELETE
+import java.io.Serializable
 
 // Existing Registration DTO
 data class RegistrationRequest(
@@ -41,7 +43,7 @@ data class RawMaterial(
     val currentQuantity: Double,  // 6 - Initial quantity
     val lowStockLimit: Double,    // 7 - Low limit alert
     val unitPrice: Double         // 8 - Price
-)
+) : Serializable
 
 // Merged Interface
 interface CocobarApi {
@@ -65,6 +67,19 @@ interface CocobarApi {
     @retrofit2.http.DELETE("api/inventory/{id}")
     fun deleteInventoryItem(@retrofit2.http.Path("id") id: Long): Call<Void>
 
+    // RECIPE ENDPOINTS
+    @retrofit2.http.GET("api/recipes")
+    fun getRecipes(): Call<List<Recipe>>
+
+    @retrofit2.http.POST("api/recipes")
+    fun addRecipe(@retrofit2.http.Body recipe: Recipe): Call<Recipe>
+
+    @PUT("api/recipes/{id}")
+    fun updateRecipe(@retrofit2.http.Path("id") id: Long, @Body recipe: Recipe): Call<Recipe>
+
+    @DELETE("api/recipes/{id}")
+    fun deleteRecipe(@retrofit2.http.Path("id") id: Long): Call<Void>
+
     companion object {
         private const val BASE_URL = "http://10.30.165.69:8080/"
 
@@ -78,6 +93,19 @@ interface CocobarApi {
     }
 }
 
+// 1. Add Data Classes at the bottom of CocobarApi.kt
+data class RecipeIngredient(
+    val rawMaterial: RawMaterial,
+    val quantityRequired: Double
+) : Serializable
+
+data class Recipe(
+    val id: Long? = null,
+    val name: String,
+    val sellingPrice: Double,
+    val imageUrl: String? = null, // Added image URL
+    val ingredients: List<RecipeIngredient>
+) : Serializable
 
 
 //package com.cocobar.app.network

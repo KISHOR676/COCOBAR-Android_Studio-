@@ -1,8 +1,10 @@
 package com.cocobar.app
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.cocobar.app.network.RawMaterial
@@ -16,6 +18,7 @@ class InventoryAdapter(
         val tvName: TextView = view.findViewById(R.id.tvItemName)
         val tvPrice: TextView = view.findViewById(R.id.tvItemPrice)
         val tvQuantity: TextView = view.findViewById(R.id.tvItemQuantity)
+        val ivImage: ImageView = view.findViewById(R.id.ivItemImage) // NEW
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InventoryViewHolder {
@@ -28,7 +31,14 @@ class InventoryAdapter(
         val item = inventoryList[position]
         holder.tvName.text = item.itemName
         holder.tvPrice.text = "₹ ${item.unitPrice}"
-        holder.tvQuantity.text = "${item.currentQuantity} ${item.unitType}"
+        holder.tvQuantity.text = "Stock: ${item.currentQuantity} ${item.unitType}"
+
+        // NEW: Load Image if available
+        if (!item.imageUrl.isNullOrEmpty()) {
+            holder.ivImage.setImageURI(Uri.parse(item.imageUrl))
+        } else {
+            holder.ivImage.setImageResource(android.R.drawable.ic_menu_gallery) // Fallback placeholder
+        }
 
         // Trigger update popup when clicked
         holder.itemView.setOnClickListener {
@@ -37,9 +47,4 @@ class InventoryAdapter(
     }
 
     override fun getItemCount() = inventoryList.size
-
-    fun updateData(newList: List<RawMaterial>) {
-        inventoryList = newList
-        notifyDataSetChanged()
-    }
 }

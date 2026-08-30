@@ -204,6 +204,13 @@ class DashboardActivity : AppCompatActivity() {
                     startActivity(intent)
                     overridePendingTransition(0, 0) // Kills the laggy slide animation
                 }
+                R.id.nav_recepi -> {
+                    val intent = Intent(this, RecipeActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    startActivity(intent)
+                    overridePendingTransition(0, 0)
+                    // (Add finish() here if you are editing InventoryActivity, leave finish() out if you are editing DashboardActivity)
+                }
                 R.id.nav_settings -> {
                     Toast.makeText(this, "Opening Settings...", Toast.LENGTH_SHORT).show()
                 }

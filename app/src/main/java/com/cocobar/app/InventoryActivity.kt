@@ -3,7 +3,8 @@ package com.cocobar.app
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -22,39 +23,47 @@ class InventoryActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityInventoryBinding
     private lateinit var adapter: InventoryAdapter
+    private var fullInventoryList: List<RawMaterial> = emptyList() // NEW
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityInventoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Setup the Navigation Sidebar
         setupNavigationDrawer()
 
-        // Setup RecyclerView for the list
         binding.rvInventory.layoutManager = LinearLayoutManager(this)
 
-        // Floating '+' Button logic
         binding.fabAddItem.setOnClickListener {
             val intent = Intent(this, AddInventoryItemActivity::class.java)
             startActivity(intent)
         }
 
-        fetchInventory()
+        // NEW: Search Bar Logic
+        binding.etSearchInventory.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                val query = s.toString().lowercase()
+                val filtered = fullInventoryList.filter { it.itemName.lowercase().contains(query) }
+
+                adapter = InventoryAdapter(filtered) { clickedItem ->
+                    showUpdateDialog(clickedItem)
+                }
+                binding.rvInventory.adapter = adapter
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
     }
 
     override fun onResume() {
         super.onResume()
-        // This runs every time the screen becomes visible again
-        // It forces the app to fetch the latest data from the database
         fetchInventory()
     }
 
     private fun setupNavigationDrawer() {
-        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        val toolbar = binding.toolbar
         setSupportActionBar(toolbar)
 
-        // Connect the hamburger toggle icon using binding.drawerLayout
         val toggle = ActionBarDrawerToggle(
             this, binding.drawerLayout, toolbar,
             R.string.nav_open, R.string.nav_close
@@ -63,33 +72,30 @@ class InventoryActivity : AppCompatActivity() {
         toggle.syncState()
 
         val navView = findViewById<NavigationView>(R.id.nav_view)
-
-        // Highlight Inventory as the current page
         navView.setCheckedItem(R.id.nav_inventory)
 
-        // 1. Navigation Menu Item Clicks
         navView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.nav_dashboard -> {
                     val intent = Intent(this@InventoryActivity, DashboardActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                     startActivity(intent)
-                    overridePendingTransition(0, 0) // Kills the laggy slide animation
-                    finish() // Safely close the inventory menu
+                    overridePendingTransition(0, 0)
+                    finish()
                 }
-                R.id.nav_inventory -> {
-                    // Already here, do nothing
-                }
-                R.id.nav_settings -> {
-                    Toast.makeText(this, "Opening Settings...", Toast.LENGTH_SHORT).show()
+                R.id.nav_inventory -> { }
+                R.id.nav_recepi -> {
+                    val intent = Intent(this@InventoryActivity, RecipeActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    startActivity(intent)
+                    overridePendingTransition(0, 0)
+                    finish()
                 }
             }
-            // Close the drawer safely using binding
             binding.drawerLayout.closeDrawers()
             true
         }
 
-        // 2. CUSTOM LOGOUT BUTTON LOGIC
         val btnLogout = findViewById<LinearLayout>(R.id.btn_custom_logout)
         btnLogout.setOnClickListener {
             val sharedPref = getSharedPreferences("CocobarPrefs", MODE_PRIVATE)
@@ -106,10 +112,9 @@ class InventoryActivity : AppCompatActivity() {
         CocobarApi.create().getInventory().enqueue(object : Callback<List<RawMaterial>> {
             override fun onResponse(call: Call<List<RawMaterial>>, response: Response<List<RawMaterial>>) {
                 if (response.isSuccessful) {
-                    val inventoryList = response.body() ?: emptyList()
+                    fullInventoryList = response.body() ?: emptyList() // Updated
 
-                    // Initialize the adapter and handle clicks
-                    adapter = InventoryAdapter(inventoryList) { clickedItem ->
+                    adapter = InventoryAdapter(fullInventoryList) { clickedItem ->
                         showUpdateDialog(clickedItem)
                     }
                     binding.rvInventory.adapter = adapter
@@ -130,7 +135,6 @@ class InventoryActivity : AppCompatActivity() {
         layout.orientation = LinearLayout.VERTICAL
         layout.setPadding(60, 40, 60, 20)
 
-        // Current Status Header
         val statusLabel = android.widget.TextView(this)
         statusLabel.text = "Current: ${item.currentQuantity} ${item.unitType} | Total Value: ₹${item.unitPrice}"
         statusLabel.textSize = 12f
@@ -138,7 +142,6 @@ class InventoryActivity : AppCompatActivity() {
         statusLabel.setPadding(0, 0, 0, 32)
         layout.addView(statusLabel)
 
-        // Add Label for Quantity Added
         val qtyLabel = android.widget.TextView(this)
         qtyLabel.text = "Quantity to Add (${item.unitType}):"
         qtyLabel.textSize = 14f
@@ -151,7 +154,6 @@ class InventoryActivity : AppCompatActivity() {
         qtyInput.hint = "e.g. 5"
         layout.addView(qtyInput)
 
-        // Add Label for Cost of New Stock
         val priceLabel = android.widget.TextView(this)
         priceLabel.text = "Cost of Added Stock (₹):"
         priceLabel.textSize = 14f
@@ -167,24 +169,21 @@ class InventoryActivity : AppCompatActivity() {
         builder.setView(layout)
 
         builder.setPositiveButton("Add Stock") { _, _ ->
-            // Get the inputted amounts (default to 0 if left blank)
             val addedQty = qtyInput.text.toString().toDoubleOrNull() ?: 0.0
             val addedCost = priceInput.text.toString().toDoubleOrNull() ?: 0.0
 
-            // CALCULATE THE NEW TOTALS
             val newTotalQty = item.currentQuantity + addedQty
             val newTotalPrice = item.unitPrice + addedCost
 
-            // Create the updated item object
             val updatedItem = item.copy(currentQuantity = newTotalQty, unitPrice = newTotalPrice)
 
-            // Send to Database
             item.itemNo?.let { id ->
                 CocobarApi.create().updateInventoryItem(id, updatedItem).enqueue(object : Callback<RawMaterial> {
                     override fun onResponse(call: Call<RawMaterial>, response: Response<RawMaterial>) {
                         if (response.isSuccessful) {
                             Toast.makeText(this@InventoryActivity, "Stock Added Successfully", Toast.LENGTH_SHORT).show()
-                            fetchInventory() // Refresh the UI list
+                            binding.etSearchInventory.text.clear() // Clear search on success
+                            fetchInventory()
                         }
                     }
                     override fun onFailure(call: Call<RawMaterial>, t: Throwable) {
@@ -196,28 +195,20 @@ class InventoryActivity : AppCompatActivity() {
 
         builder.setNegativeButton("Cancel", null)
 
-        // ==========================================
-        // PASTE THIS NEW DELETE BUTTON LOGIC HERE
-        // ==========================================
         builder.setNeutralButton("Delete Item") { _, _ ->
-            // Show a confirmation warning first
             AlertDialog.Builder(this)
                 .setTitle("Delete ${item.itemName}?")
                 .setMessage("Are you sure you want to completely remove this item? This action cannot be undone.")
                 .setPositiveButton("Yes, Delete") { _, _ ->
-
-                    // Call the API to delete
                     item.itemNo?.let { id ->
                         CocobarApi.create().deleteInventoryItem(id).enqueue(object : Callback<Void> {
                             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                                 if (response.isSuccessful) {
                                     Toast.makeText(this@InventoryActivity, "${item.itemName} deleted", Toast.LENGTH_SHORT).show()
-                                    fetchInventory() // Refresh the list
-                                } else {
-                                    Toast.makeText(this@InventoryActivity, "Server Error", Toast.LENGTH_SHORT).show()
+                                    binding.etSearchInventory.text.clear() // Clear search on success
+                                    fetchInventory()
                                 }
                             }
-
                             override fun onFailure(call: Call<Void>, t: Throwable) {
                                 Toast.makeText(this@InventoryActivity, "Network Error", Toast.LENGTH_SHORT).show()
                             }
@@ -227,8 +218,7 @@ class InventoryActivity : AppCompatActivity() {
                 .setNegativeButton("Cancel", null)
                 .show()
         }
-        // ==========================================
+
         builder.show()
     }
-
 }
