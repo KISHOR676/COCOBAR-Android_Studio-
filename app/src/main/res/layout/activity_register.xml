@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/coco_bg_outer"
+    android:fillViewport="true"
+    tools:context=".RegisterActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="32dp"
+        android:paddingBottom="24dp">
+
+        <!-- Main Beige Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/mainCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="32dp"
+            app:cardBackgroundColor="@color/coco_card_beige"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp"
+            app:layout_constraintBottom_toTopOf="@id/tvFooterText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.3">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- 1. Top Banner Image (Using the image_f5c581.jpg you provided earlier) -->
+                <ImageView
+                    android:id="@+id/imgBanner"
+                    android:layout_width="match_parent"
+                    android:layout_height="99dp"
+                    android:contentDescription="Cocobar Banner"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/image_f5c581" />
+
+                <!-- 2. Titles Area -->
+                <TextView
+                    android:id="@+id/tvCreateAccountTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:fontFamily="serif"
+                    android:gravity="center"
+                    android:text="Create Account"
+                    android:textColor="@color/coco_text_dark"
+                    android:textSize="32sp"
+                    android:textStyle="bold" />
+
+                <!-- 3. Inner Dark Form Container -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:background="@drawable/bg_inner_form"
+                    android:orientation="vertical"
+                    android:paddingStart="20dp"
+                    android:paddingTop="24dp"
+                    android:paddingEnd="20dp"
+                    android:paddingBottom="24dp">
+
+                    <!-- Full Name -->
+                    <EditText
+                        android:id="@+id/etFullName"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:background="@drawable/bg_input_pill"
+                        android:hint="Full Name"
+                        android:inputType="textPersonName"
+                        android:paddingStart="24dp"
+                        android:paddingEnd="24dp"
+                        android:textColor="@color/coco_text_dark"
+                        android:textColorHint="@color/coco_hint_dark"
+                        android:textSize="16sp" />
+
+                    <include layout="@layout/layout_divider" />
+
+                    <!-- Mobile Number -->
+                    <EditText
+                        android:id="@+id/etMobileNumber"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:background="@drawable/bg_input_pill"
+                        android:hint="Mobile Number"
+                        android:inputType="phone"
+                        android:paddingStart="24dp"
+                        android:paddingEnd="24dp"
+                        android:textColor="@color/coco_text_dark"
+                        android:textColorHint="@color/coco_hint_dark"
+                        android:textSize="16sp" />
+
+                    <include layout="@layout/layout_divider" />
+
+                    <!-- Business Email -->
+                    <EditText
+                        android:id="@+id/etBusinessEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:background="@drawable/bg_input_pill"
+                        android:hint="Business Email"
+                        android:inputType="textEmailAddress"
+                        android:paddingStart="24dp"
+                        android:paddingEnd="24dp"
+                        android:textColor="@color/coco_text_dark"
+                        android:textColorHint="@color/coco_hint_dark"
+                        android:textSize="16sp" />
+
+                    <include layout="@layout/layout_divider" />
+
+                    <!-- Password -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:hintEnabled="false"
+                        app:passwordToggleEnabled="true"
+                        app:passwordToggleTint="@color/coco_text_dark"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etPassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:background="@drawable/bg_input_pill"
+                            android:hint="Password"
+                            android:inputType="textPassword"
+                            android:paddingStart="24dp"
+                            android:paddingEnd="24dp"
+                            android:textColor="@color/coco_text_dark"
+                            android:textColorHint="@color/coco_hint_dark"
+                            android:textSize="16sp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <include layout="@layout/layout_divider" />
+
+                    <!-- Confirm Password -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="24dp"
+                        app:hintEnabled="false"
+                        app:passwordToggleEnabled="true"
+                        app:passwordToggleTint="@color/coco_text_dark"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etConfirmPassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:background="@drawable/bg_input_pill"
+                            android:hint="Confirm Password"
+                            android:inputType="textPassword"
+                            android:paddingStart="24dp"
+                            android:paddingEnd="24dp"
+                            android:textColor="@color/coco_text_dark"
+                            android:textColorHint="@color/coco_hint_dark"
+                            android:textSize="16sp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- 4. Register Button -->
+                    <Button
+                        android:id="@+id/btnRegister"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:background="@drawable/bg_button_gold"
+                        android:fontFamily="serif"
+                        android:text="REGISTER"
+                        android:textColor="@color/coco_form_dark"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:backgroundTint="@null" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- 5. Footer Text (Outside Card) -->
+        <TextView
+            android:id="@+id/tvFooterText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:text="Already have an account? Login here."
+            android:textColor="@color/coco_text_light"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

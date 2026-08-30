@@ -1,0 +1,51 @@
+*.iml
+
+# Gradle
+
+.gradle/
+build/
+app/build/
+
+# Local configuration
+
+/local.properties
+local.properties
+
+# Android Studio / IntelliJ
+
+.idea/
+
+# Kotlin generated files and logs
+
+.kotlin/
+
+# Android files
+
+/captures/
+.externalNativeBuild/
+.cxx/
+
+# System files
+
+.DS_Store
+
+
+
+
+
+# *.iml
+# .gradle
+# /local.properties
+# /.idea/
+# .DS_Store
+# /build
+# /captures
+# .externalNativeBuild
+# .cxx
+
+# # Kotlin / generated files
+# .kotlin/
+
+# # Android build files
+# /app/build/
+

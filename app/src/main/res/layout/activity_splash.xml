@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:id="@+id/splashRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/coco_splash_bg">
+
+    <!-- Premium light behind the logo -->
+    <View
+        android:id="@+id/glowView"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:alpha="0"
+        android:background="@drawable/bg_splash_glow"
+
+        app:layout_constraintBottom_toBottomOf="@id/logoCircle"
+        app:layout_constraintEnd_toEndOf="@id/logoCircle"
+        app:layout_constraintStart_toStartOf="@id/logoCircle"
+        app:layout_constraintTop_toTopOf="@id/logoCircle" />
+
+
+    <!-- Circular COCOBAR logo -->
+    <FrameLayout
+        android:id="@+id/logoCircle"
+
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+
+        android:alpha="0"
+        android:scaleX="0.65"
+        android:scaleY="0.65"
+
+        android:background="@drawable/bg_logo_circle"
+        android:elevation="10dp"
+
+        app:layout_constraintBottom_toTopOf="@id/tvSplashTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:layout_constraintVertical_chainStyle="packed">
+
+        <ImageView
+            android:id="@+id/imgSplashLogo"
+
+            android:layout_width="112dp"
+            android:layout_height="112dp"
+
+            android:layout_gravity="center"
+
+            android:contentDescription="COCOBAR Logo"
+            android:scaleType="centerInside"
+
+            android:src="@drawable/ic_cocobar_logo" />
+
+    </FrameLayout>
+
+
+    <!-- Gold circular animation ring -->
+    <View
+        android:id="@+id/goldRing"
+
+        android:layout_width="162dp"
+        android:layout_height="162dp"
+
+        android:alpha="0"
+        android:background="@drawable/bg_gold_ring"
+
+        app:layout_constraintBottom_toBottomOf="@id/logoCircle"
+        app:layout_constraintEnd_toEndOf="@id/logoCircle"
+        app:layout_constraintStart_toStartOf="@id/logoCircle"
+        app:layout_constraintTop_toTopOf="@id/logoCircle" />
+
+
+    <!-- COCOBAR name -->
+    <TextView
+        android:id="@+id/tvSplashTitle"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="22dp"
+
+        android:alpha="0"
+        android:translationY="25dp"
+
+        android:fontFamily="serif"
+
+        android:letterSpacing="0.08"
+
+        android:text="COCOBAR"
+
+        android:textColor="@color/coco_main_beige"
+
+        android:textSize="34sp"
+
+        android:textStyle="bold"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/logoCircle" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

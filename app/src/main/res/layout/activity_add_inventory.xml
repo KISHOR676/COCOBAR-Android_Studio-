@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/coco_main_beige">
+
+    <!-- Premium Dark Header -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@color/coco_bg_outer"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="20dp"
+            android:src="@drawable/ic_back_arrow"
+            app:tint="@color/cocobar_gold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Add Raw Material"
+            android:textColor="@color/cocobar_gold"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/btnBack"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Scrollable Form Area -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <!-- Dynamic Date Display -->
+            <TextView
+                android:id="@+id/tvDateAdded"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Date: -- --- ----"
+                android:textColor="@color/coco_header_brown"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:gravity="end"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Item Image Picker -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardImagePicker"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="24dp"
+                app:cardBackgroundColor="@color/coco_input_beige"
+                app:cardCornerRadius="16dp"
+                app:strokeColor="@color/coco_divider_gold"
+                app:strokeWidth="1dp">
+
+                <ImageView
+                    android:id="@+id/ivItemImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@android:drawable/ic_menu_camera"
+                    app:tint="@color/coco_header_brown"
+                    android:padding="32dp" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tap to add Image (Optional)"
+                android:gravity="center"
+                android:textColor="@color/coco_hint_dark"
+                android:layout_marginTop="-16dp"
+                android:layout_marginBottom="24dp"
+                android:textSize="12sp"/>
+
+            <!-- Item Name -->
+            <EditText
+                android:id="@+id/etItemName"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@color/white"
+                android:hint="Item Name (e.g., Coffee Powder)"
+                android:padding="16dp"
+                android:textColor="@color/coco_text_dark"
+                android:textColorHint="@color/coco_hint_dark"
+                android:layout_marginBottom="16dp"
+                android:elevation="2dp" />
+
+            <!-- Unit Type Radio Buttons -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Unit Type:"
+                android:textColor="@color/coco_text_dark"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <RadioGroup
+                android:id="@+id/rgUnitType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+
+                <RadioButton
+                    android:id="@+id/rbKg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="kg"
+                    android:textColor="@color/coco_text_dark"
+                    android:buttonTint="@color/coco_header_brown"
+                    android:layout_marginEnd="16dp"
+                    android:checked="true"/> <!-- Default selection -->
+
+                <RadioButton
+                    android:id="@+id/rbGrams"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="grams"
+                    android:textColor="@color/coco_text_dark"
+                    android:buttonTint="@color/coco_header_brown"
+                    android:layout_marginEnd="16dp"/>
+
+                <RadioButton
+                    android:id="@+id/rbMl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ml"
+                    android:textColor="@color/coco_text_dark"
+                    android:buttonTint="@color/coco_header_brown"
+                    android:layout_marginEnd="16dp"/>
+
+                <RadioButton
+                    android:id="@+id/rbPcs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="pcs"
+                    android:textColor="@color/coco_text_dark"
+                    android:buttonTint="@color/coco_header_brown"/>
+            </RadioGroup>
+
+            <!-- Initial Quantity -->
+            <EditText
+                android:id="@+id/etQuantity"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@color/white"
+                android:hint="Initial Quantity"
+                android:inputType="numberDecimal"
+                android:padding="16dp"
+                android:textColor="@color/coco_text_dark"
+                android:textColorHint="@color/coco_hint_dark"
+                android:layout_marginBottom="16dp"
+                android:elevation="2dp" />
+
+            <!-- Low Stock Limit -->
+            <EditText
+                android:id="@+id/etLowLimit"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@color/white"
+                android:hint="Low Stock Alert Limit"
+                android:inputType="numberDecimal"
+                android:padding="16dp"
+                android:textColor="@color/coco_text_dark"
+                android:textColorHint="@color/coco_hint_dark"
+                android:layout_marginBottom="16dp"
+                android:elevation="2dp" />
+
+            <!-- Unit Price -->
+            <EditText
+                android:id="@+id/etPrice"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@color/white"
+                android:hint="Unit Price (₹)"
+                android:inputType="numberDecimal"
+                android:padding="16dp"
+                android:textColor="@color/coco_text_dark"
+                android:textColorHint="@color/coco_hint_dark"
+                android:layout_marginBottom="32dp"
+                android:elevation="2dp" />
+
+            <!-- Save Button -->
+            <Button
+                android:id="@+id/btnSaveItem"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:backgroundTint="@color/cocobar_gold"
+                android:text="Add Item in the Inventory"
+                android:textColor="@color/coco_bg_outer"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+
+
+
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:background="@color/coco_main_beige"-->
+<!--    android:fillViewport="true">-->
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="vertical"-->
+<!--        android:padding="24dp">-->
+
+<!--        <TextView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Add Raw Material"-->
+<!--            android:textColor="@color/coco_header_brown"-->
+<!--            android:textSize="28sp"-->
+<!--            android:textStyle="bold"-->
+<!--            android:layout_marginBottom="24dp" />-->
+
+<!--        &lt;!&ndash; Item Name &ndash;&gt;-->
+<!--        <EditText-->
+<!--            android:id="@+id/etItemName"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="60dp"-->
+<!--            android:background="@color/white"-->
+<!--            android:hint="Item Name (e.g., Coffee Powder)"-->
+<!--            android:padding="16dp"-->
+<!--            android:textColor="@color/coco_text_dark"-->
+<!--            android:textColorHint="@color/coco_hint_dark"-->
+<!--            android:layout_marginBottom="16dp"-->
+<!--            android:elevation="2dp" />-->
+
+<!--        &lt;!&ndash; Unit Type &ndash;&gt;-->
+<!--        <EditText-->
+<!--            android:id="@+id/etUnitType"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="60dp"-->
+<!--            android:background="@color/white"-->
+<!--            android:hint="Unit Type (kg, grams, ml, pcs)"-->
+<!--            android:padding="16dp"-->
+<!--            android:textColor="@color/coco_text_dark"-->
+<!--            android:textColorHint="@color/coco_hint_dark"-->
+<!--            android:layout_marginBottom="16dp"-->
+<!--            android:elevation="2dp" />-->
+
+<!--        &lt;!&ndash; Initial Quantity &ndash;&gt;-->
+<!--        <EditText-->
+<!--            android:id="@+id/etQuantity"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="60dp"-->
+<!--            android:background="@color/white"-->
+<!--            android:hint="Initial Quantity"-->
+<!--            android:inputType="numberDecimal"-->
+<!--            android:padding="16dp"-->
+<!--            android:textColor="@color/coco_text_dark"-->
+<!--            android:textColorHint="@color/coco_hint_dark"-->
+<!--            android:layout_marginBottom="16dp"-->
+<!--            android:elevation="2dp" />-->
+
+<!--        &lt;!&ndash; Low Stock Limit &ndash;&gt;-->
+<!--        <EditText-->
+<!--            android:id="@+id/etLowLimit"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="60dp"-->
+<!--            android:background="@color/white"-->
+<!--            android:hint="Low Stock Alert Limit"-->
+<!--            android:inputType="numberDecimal"-->
+<!--            android:padding="16dp"-->
+<!--            android:textColor="@color/coco_text_dark"-->
+<!--            android:textColorHint="@color/coco_hint_dark"-->
+<!--            android:layout_marginBottom="16dp"-->
+<!--            android:elevation="2dp" />-->
+
+<!--        &lt;!&ndash; Unit Price &ndash;&gt;-->
+<!--        <EditText-->
+<!--            android:id="@+id/etPrice"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="60dp"-->
+<!--            android:background="@color/white"-->
+<!--            android:hint="Price (₹)"-->
+<!--            android:inputType="numberDecimal"-->
+<!--            android:padding="16dp"-->
+<!--            android:textColor="@color/coco_text_dark"-->
+<!--            android:textColorHint="@color/coco_hint_dark"-->
+<!--            android:layout_marginBottom="32dp"-->
+<!--            android:elevation="2dp" />-->
+
+<!--        <Button-->
+<!--            android:id="@+id/btnSaveItem"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="60dp"-->
+<!--            android:backgroundTint="@color/cocobar_gold"-->
+<!--            android:text="Save to Database"-->
+<!--            android:textColor="@color/coco_header_brown"-->
+<!--            android:textSize="18sp"-->
+<!--            android:textStyle="bold" />-->
+<!--    </LinearLayout>-->
+<!--</ScrollView>-->

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Design Colors -->
+    <color name="coco_header_brown">#4C342C</color> <!-- Dark brown header -->
+    <color name="coco_main_beige">#F5EBE0</color>    <!-- Main content area -->
+    <color name="coco_button_teal">#2F6F6B</color>   <!-- Teal-green register button -->
+    <color name="coco_input_bg">#FFFFFF</color>      <!-- White input field background -->
+    <color name="coco_splash_bg">#21120D</color>
+    <color name="coco_bg_outer">#281D17</color> <!-- Dark leather background -->
+    <color name="coco_card_beige">#F0E5D3</color> <!-- Main cream/beige card -->
+    <color name="coco_form_dark">#211510</color> <!-- Inner dark brown form background -->
+    <color name="coco_input_beige">#E5D4BE</color> <!-- Beige input pill background -->
+    <color name="coco_text_dark">#312018</color> <!-- Dark brown text -->
+    <color name="coco_text_light">#F0E5D3</color> <!-- Cream text for footer -->
+    <color name="coco_gold">#C09C6B</color> <!-- Register button gold -->
+    <color name="coco_divider_gold">#523D2B</color> <!-- Divider lines -->
+    <color name="coco_hint_dark">#80312018</color> <!-- Transparent dark text for hints -->
+    <color name="cocobar_leather_bg">#231611</color> <!-- Textured leather color -->
+    <color name="cocobar_card_bg">#F5EDE0</color> <!-- Central card color -->
+    <color name="cocobar_banner_bg">#2A1C15</color> <!-- Top dark banner color -->
+    <color name="cocobar_form_bg">#2A1C15</color> <!-- Inner form container color -->
+    <color name="cocobar_gold">#D8B07D</color> <!-- Used for logo, button, text, and inputs -->
+    <color name="cocobar_text_dark">#2A1C15</color> <!-- Dark text -->
+</resources>
+    
