@@ -83,6 +83,9 @@ interface CocobarApi {
     @retrofit2.http.POST("api/sales")
     fun recordSale(@retrofit2.http.Body request: SaleRequest): Call<Sale>
 
+    @retrofit2.http.POST("api/sales/bulk")
+    fun recordBulkSale(@retrofit2.http.Body requests: List<SaleRequest>): Call<List<Sale>>
+
     companion object {
         private const val BASE_URL = "http://10.30.165.69:8080/"
 
@@ -123,53 +126,29 @@ data class SaleRequest(
     val recipeId: Long,
     val quantity: Int
 )
-//package com.cocobar.app.network
-//
-//import com.google.gson.annotations.SerializedName
-//import retrofit2.Call
-//import retrofit2.Retrofit
-//import retrofit2.converter.gson.GsonConverterFactory
-//import retrofit2.http.Body
-//import retrofit2.http.POST
-//
-//// Existing Registration DTO
-//data class RegistrationRequest(
-//    @SerializedName("fullName") val fullName: String,
-//    @SerializedName("mobileNumber") val mobileNumber: String,
-//    @SerializedName("businessEmail") val businessEmail: String,
-//    @SerializedName("password") val password: String
-//)
-//
-//// NEW: Login DTO
-//data class LoginRequest(
-//    @SerializedName("businessEmail") val businessEmail: String,
-//    @SerializedName("password") val password: String
-//)
-//
-//// Existing Response DTO (used for both Login and Registration)
-//data class UserResponse(
-//    val id: Long,
-//    val fullName: String,
-//    val businessEmail: String,
-//    val mobileNumber: String
-//)
-//
-//interface CocobarApi {
-//    @POST("api/auth/register") // Removed the leading slash
-//    fun registerUser(@Body request: RegistrationRequest): Call<UserResponse>
-//
-//    @POST("api/auth/login") // Removed the leading slash
-//    fun loginUser(@Body request: LoginRequest): Call<UserResponse>
-//    companion object {
-//        private const val BASE_URL = "http://10.162.176.69:8080/"
-//
-//        fun create(): CocobarApi {
-//            val retrofit = Retrofit.Builder()
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .baseUrl(BASE_URL)
-//                .build()
-//            return retrofit.create(CocobarApi::class.java)
-//        }
-//    }
-//}
-//
+
+data class CartItem(
+    val product: Recipe,
+    var quantity: Int
+)
+
+object CartManager {
+    val cartItems = mutableListOf<CartItem>()
+
+    fun addItem(product: Recipe, quantity: Int) {
+        val existing = cartItems.find { it.product.id == product.id }
+        if (existing != null) {
+            existing.quantity += quantity
+        } else {
+            cartItems.add(CartItem(product, quantity))
+        }
+    }
+
+    fun getTotalPrice(): Double {
+        return cartItems.sumOf { it.product.sellingPrice * it.quantity }
+    }
+
+    fun clearCart() {
+        cartItems.clear()
+    }
+}

@@ -16,6 +16,7 @@ import com.google.android.material.navigation.NavigationView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.jvm.java
 
 @Suppress("DEPRECATION")
 class ProductsActivity : AppCompatActivity() {
@@ -53,6 +54,20 @@ class ProductsActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         fetchProducts()
+
+        // Update the Floating Button every time we return to the list
+        val totalItems = com.cocobar.app.network.CartManager.cartItems.sumOf { it.quantity }
+        val totalPrice = com.cocobar.app.network.CartManager.getTotalPrice()
+
+        if (totalItems > 0) {
+            binding.fabCart.visibility = android.view.View.VISIBLE
+            binding.fabCart.text = "Order ($totalItems) - ₹${String.format("%.2f", totalPrice)}"
+            binding.fabCart.setOnClickListener {
+                startActivity(Intent(this, CartActivity::class.java))
+            }
+        } else {
+            binding.fabCart.visibility = android.view.View.GONE
+        }
     }
 
     private fun setupNavigationDrawer() {

@@ -59,6 +59,9 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
+        <activity android:name=".CartActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
 
         <!-- The app will now start here -->
         <activity

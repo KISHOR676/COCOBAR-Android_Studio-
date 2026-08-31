@@ -75,33 +75,11 @@ class SellProductActivity : AppCompatActivity() {
     }
 
     private fun processSale() {
-        binding.btnSellProduct.isEnabled = false // Prevent double clicks
-        val request = SaleRequest(recipeId = product.id!!, quantity = currentQty)
+        // Add the selected item to our global order manager
+        com.cocobar.app.network.CartManager.addItem(product, currentQty)
 
-        CocobarApi.create().recordSale(request).enqueue(object : Callback<Sale> {
-            override fun onResponse(call: Call<Sale>, response: Response<Sale>) {
-                try {
-                    if (response.isSuccessful) {
-                        val saleRecord = response.body()
-                        val intent = Intent(this@SellProductActivity, SaleSuccessActivity::class.java)
-                        intent.putExtra("SALE_RECORD", saleRecord)
-                        startActivity(intent)
-                        finish()
-                    } else {
-                        binding.btnSellProduct.isEnabled = true
-                        Toast.makeText(this@SellProductActivity, "Server Error Code: ${response.code()}", Toast.LENGTH_LONG).show()
-                    }
-                } catch (e: Exception) {
-                    binding.btnSellProduct.isEnabled = true
-                    Toast.makeText(this@SellProductActivity, "App Error: ${e.message}", Toast.LENGTH_LONG).show()
-                }
-            }
-
-            override fun onFailure(call: Call<Sale>, t: Throwable) {
-                binding.btnSellProduct.isEnabled = true
-                Toast.makeText(this@SellProductActivity, "Network Error: Cannot reach server", Toast.LENGTH_LONG).show()
-            }
-        })
+        Toast.makeText(this, "${currentQty}x ${product.name} added to order!", Toast.LENGTH_SHORT).show()
+        finish() // Return to the product list so the owner can add more items
     }
 
 //    private fun processSale() {
@@ -110,25 +88,29 @@ class SellProductActivity : AppCompatActivity() {
 //
 //        CocobarApi.create().recordSale(request).enqueue(object : Callback<Sale> {
 //            override fun onResponse(call: Call<Sale>, response: Response<Sale>) {
-//                if (response.isSuccessful) {
-//                    val saleRecord = response.body()
-//                    val intent = Intent(this@SellProductActivity, SaleSuccessActivity::class.java)
-//                    intent.putExtra("SALE_RECORD", saleRecord)
-//                    startActivity(intent)
-//                    finish() // Close this page
-//                } else {
+//                try {
+//                    if (response.isSuccessful) {
+//                        val saleRecord = response.body()
+//                        val intent = Intent(this@SellProductActivity, SaleSuccessActivity::class.java)
+//                        intent.putExtra("SALE_RECORD", saleRecord)
+//                        startActivity(intent)
+//                        finish()
+//                    } else {
+//                        binding.btnSellProduct.isEnabled = true
+//                        Toast.makeText(this@SellProductActivity, "Server Error Code: ${response.code()}", Toast.LENGTH_LONG).show()
+//                    }
+//                } catch (e: Exception) {
 //                    binding.btnSellProduct.isEnabled = true
-//                    // FIX: Extract and show the actual backend error message
-//                    val errorMessage = response.errorBody()?.string() ?: "Unknown Server Error"
-//                    Toast.makeText(this@SellProductActivity, errorMessage, Toast.LENGTH_LONG).show()
+//                    Toast.makeText(this@SellProductActivity, "App Error: ${e.message}", Toast.LENGTH_LONG).show()
 //                }
 //            }
 //
 //            override fun onFailure(call: Call<Sale>, t: Throwable) {
 //                binding.btnSellProduct.isEnabled = true
-//                // This will print the exact crash reason (like JSON formatting issues) on your screen
-//                Toast.makeText(this@SellProductActivity, "Error: ${t.message}", Toast.LENGTH_LONG).show()
+//                Toast.makeText(this@SellProductActivity, "Network Error: Cannot reach server", Toast.LENGTH_LONG).show()
 //            }
 //        })
 //    }
+
+
 }

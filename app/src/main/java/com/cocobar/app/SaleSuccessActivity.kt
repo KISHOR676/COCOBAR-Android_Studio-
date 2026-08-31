@@ -37,6 +37,15 @@ class SaleSuccessActivity : AppCompatActivity() {
         binding.btnViewHistory.setOnClickListener {
             Toast.makeText(this, "Sales History coming in next update!", Toast.LENGTH_SHORT).show()
         }
+
+        // Read the bulk order summary
+        val total = intent.getDoubleExtra("TOTAL_PRICE", 0.0)
+        val itemCount = intent.getIntExtra("ITEM_COUNT", 0)
+
+        // Set UI (Update your activity_sale_success.xml to match these IDs if needed)
+        binding.tvSummaryProduct.text = "Multiple Items"
+        binding.tvSummaryQty.text = "$itemCount items sold"
+        binding.tvSummaryTotal.text = "₹${String.format("%.2f", total)}"
     }
 
     override fun onBackPressed() {
