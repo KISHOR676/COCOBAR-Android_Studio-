@@ -9,6 +9,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.DELETE
+import retrofit2.http.Query
 import java.io.Serializable
 
 // Existing Registration DTO
@@ -86,6 +87,18 @@ interface CocobarApi {
     @retrofit2.http.POST("api/sales/bulk")
     fun recordBulkSale(@retrofit2.http.Body requests: List<SaleRequest>): Call<List<Sale>>
 
+    @GET("api/history/overview")
+    fun getSalesOverview(@Query("startDate") startDate: String, @Query("endDate") endDate: String): Call<SalesOverviewDTO>
+
+    @GET("api/history/top-selling")
+    fun getTopSelling(@Query("startDate") startDate: String, @Query("endDate") endDate: String): Call<List<TopSellingDTO>>
+
+    @GET("api/history/daily")
+    fun getDailySales(@Query("startDate") startDate: String, @Query("endDate") endDate: String): Call<List<DailySaleDTO>>
+
+    @GET("api/history/recent")
+    fun getRecentSales(@Query("startDate") startDate: String, @Query("endDate") endDate: String): Call<List<Sale>>
+
     companion object {
         private const val BASE_URL = "http://10.30.165.69:8080/"
 
@@ -98,6 +111,28 @@ interface CocobarApi {
         }
     }
 }
+
+object CartManager {
+    val cartItems = mutableListOf<CartItem>()
+
+    fun addItem(product: Recipe, quantity: Int) {
+        val existing = cartItems.find { it.product.id == product.id }
+        if (existing != null) {
+            existing.quantity += quantity
+        } else {
+            cartItems.add(CartItem(product, quantity))
+        }
+    }
+
+    fun getTotalPrice(): Double {
+        return cartItems.sumOf { it.product.sellingPrice * it.quantity }
+    }
+
+    fun clearCart() {
+        cartItems.clear()
+    }
+}
+
 
 // 1. Add Data Classes at the bottom of CocobarApi.kt
 data class RecipeIngredient(
@@ -132,23 +167,45 @@ data class CartItem(
     var quantity: Int
 )
 
-object CartManager {
-    val cartItems = mutableListOf<CartItem>()
+data class SalesOverviewDTO(
+    val totalSales: Double,
+    val totalOrders: Long,
+    val itemsSold: Long,
+    val avgOrderValue: Double
+)
 
-    fun addItem(product: Recipe, quantity: Int) {
-        val existing = cartItems.find { it.product.id == product.id }
-        if (existing != null) {
-            existing.quantity += quantity
-        } else {
-            cartItems.add(CartItem(product, quantity))
-        }
-    }
+data class TopSellingDTO(
+    val productName: String,
+    val imageUrl: String?,
+    val totalQuantity: Long,
+    val totalRevenue: Double,
+    val totalOrders: Long
+)
 
-    fun getTotalPrice(): Double {
-        return cartItems.sumOf { it.product.sellingPrice * it.quantity }
-    }
+data class DailySaleDTO(
+    val date: String,
+    val dailyTotal: Double,
+    val totalOrders: Long,
+    val itemsSold: Long
+)
 
-    fun clearCart() {
-        cartItems.clear()
-    }
-}
+//object CartManager {
+//    val cartItems = mutableListOf<CartItem>()
+//
+//    fun addItem(product: Recipe, quantity: Int) {
+//        val existing = cartItems.find { it.product.id == product.id }
+//        if (existing != null) {
+//            existing.quantity += quantity
+//        } else {
+//            cartItems.add(CartItem(product, quantity))
+//        }
+//    }
+//
+//    fun getTotalPrice(): Double {
+//        return cartItems.sumOf { it.product.sellingPrice * it.quantity }
+//    }
+//
+//    fun clearCart() {
+//        cartItems.clear()
+//    }
+//}

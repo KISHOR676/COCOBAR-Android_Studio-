@@ -100,6 +100,13 @@ class RecipeActivity : AppCompatActivity() {
                     overridePendingTransition(0, 0)
                     finish()
                 }
+                R.id.nav_saleshistory -> {
+                    val intent = Intent(this, SalesHistoryActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    startActivity(intent)
+                    overridePendingTransition(0, 0)
+                    finish()
+                }
             }
             binding.drawerLayout.closeDrawers()
             true
