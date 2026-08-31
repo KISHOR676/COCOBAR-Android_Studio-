@@ -80,6 +80,9 @@ interface CocobarApi {
     @DELETE("api/recipes/{id}")
     fun deleteRecipe(@retrofit2.http.Path("id") id: Long): Call<Void>
 
+    @retrofit2.http.POST("api/sales")
+    fun recordSale(@retrofit2.http.Body request: SaleRequest): Call<Sale>
+
     companion object {
         private const val BASE_URL = "http://10.30.165.69:8080/"
 
@@ -107,7 +110,19 @@ data class Recipe(
     val ingredients: List<RecipeIngredient>
 ) : Serializable
 
+// Add this to your data classes at the bottom of CocobarApi.kt
+data class Sale(
+    val id: Long? = null,
+    val recipe: Recipe,
+    val quantity: Int,
+    val totalPrice: Double,
+    val saleDate: String
+) : Serializable
 
+data class SaleRequest(
+    val recipeId: Long,
+    val quantity: Int
+)
 //package com.cocobar.app.network
 //
 //import com.google.gson.annotations.SerializedName

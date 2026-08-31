@@ -47,6 +47,19 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
+        <activity android:name=".ProductsActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity android:name=".SellProductActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity android:name=".SaleSuccessActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+
         <!-- The app will now start here -->
         <activity
             android:name=".DashboardActivity"

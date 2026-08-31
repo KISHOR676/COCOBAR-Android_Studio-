@@ -211,6 +211,13 @@ class DashboardActivity : AppCompatActivity() {
                     overridePendingTransition(0, 0)
                     // (Add finish() here if you are editing InventoryActivity, leave finish() out if you are editing DashboardActivity)
                 }
+                R.id.nav_product -> {
+                    val intent = Intent(this, ProductsActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    startActivity(intent)
+                    overridePendingTransition(0, 0)
+                    finish()
+                }
                 R.id.nav_settings -> {
                     Toast.makeText(this, "Opening Settings...", Toast.LENGTH_SHORT).show()
                 }
