@@ -48,6 +48,23 @@ class DashboardActivity : AppCompatActivity() {
         tvCurrentDate = findViewById(R.id.tv_current_date)
         tvWelcomeName = findViewById(R.id.tv_welcome_name)
 
+        // Find the card containers
+        val cardInventory = findViewById<android.widget.LinearLayout>(R.id.card_inventory)
+        val cardLowStock = findViewById<android.widget.LinearLayout>(R.id.card_low_stock)
+
+        // Standard click: Open Inventory normally
+        cardInventory.setOnClickListener {
+            val intent = Intent(this, InventoryActivity::class.java)
+            startActivity(intent)
+        }
+
+        // Filtered click: Open Inventory and pass a flag to show ONLY low stock
+        cardLowStock.setOnClickListener {
+            val intent = Intent(this, InventoryActivity::class.java)
+            intent.putExtra("FILTER_LOW_STOCK", true)
+            startActivity(intent)
+        }
+
         setupNavigationDrawer()
         fetchDashboardData()
     }

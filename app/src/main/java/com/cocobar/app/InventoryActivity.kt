@@ -24,11 +24,15 @@ class InventoryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityInventoryBinding
     private lateinit var adapter: InventoryAdapter
     private var fullInventoryList: List<RawMaterial> = emptyList() // NEW
+    private var isLowStockFilterActive = false // Add this at the top of the class
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityInventoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Read the intent flag from the Dashboard
+        isLowStockFilterActive = intent.getBooleanExtra("FILTER_LOW_STOCK", false)
 
         setupNavigationDrawer()
 
@@ -42,6 +46,12 @@ class InventoryActivity : AppCompatActivity() {
         // NEW: Search Bar Logic
         binding.etSearchInventory.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
+                // Prevent crash if user types before internet data arrives
+                if (fullInventoryList.isEmpty()) return
+
+                // If the user starts typing, disable the low stock filter to search everything
+                isLowStockFilterActive = false
+
                 val query = s.toString().lowercase()
                 val filtered = fullInventoryList.filter { it.itemName.lowercase().contains(query) }
 
@@ -127,6 +137,14 @@ class InventoryActivity : AppCompatActivity() {
             override fun onResponse(call: Call<List<RawMaterial>>, response: Response<List<RawMaterial>>) {
                 if (response.isSuccessful) {
                     fullInventoryList = response.body() ?: emptyList() // Updated
+
+                    // Determine which list to show based on the dashboard click
+                    val displayList = if (isLowStockFilterActive) {
+                        // Show only items where current stock is less than or equal to the limit
+                        fullInventoryList.filter { it.currentQuantity <= it.lowStockLimit }
+                    } else {
+                        fullInventoryList
+                    }
 
                     adapter = InventoryAdapter(fullInventoryList) { clickedItem ->
                         showUpdateDialog(clickedItem)

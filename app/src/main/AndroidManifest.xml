@@ -71,6 +71,10 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
+        <activity android:name=".DailySalesDetailActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"/>
+
         <!-- The app will now start here -->
         <activity
             android:name=".DashboardActivity"

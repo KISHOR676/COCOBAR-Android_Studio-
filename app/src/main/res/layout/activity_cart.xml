@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/coco_main_beige">
+    android:background="@color/coco_main_beige"
+    android:fitsSystemWindows="true">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -12,6 +13,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/white"
         app:title="Review Order"
+        android:textStyle="bold"
         app:titleTextColor="#312018" />
 
     <ScrollView

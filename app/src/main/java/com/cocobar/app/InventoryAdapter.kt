@@ -33,12 +33,28 @@ class InventoryAdapter(
         holder.tvPrice.text = "₹ ${item.unitPrice}"
         holder.tvQuantity.text = "Stock: ${item.currentQuantity} ${item.unitType}"
 
-        // NEW: Load Image if available
-        if (!item.imageUrl.isNullOrEmpty()) {
-            holder.ivImage.setImageURI(Uri.parse(item.imageUrl))
-        } else {
-            holder.ivImage.setImageResource(android.R.drawable.ic_menu_gallery) // Fallback placeholder
+        // SAFE IMAGE LOADING TO PREVENT ContentProvider CRASHES
+        holder.ivImage.setImageResource(android.R.drawable.ic_menu_gallery) // Default fallback
+
+        item.imageUrl?.let { urlString ->
+            if (urlString.isNotBlank()) {
+                try {
+                    val uri = Uri.parse(urlString)
+                    // Only try loading content URI if accessible; catch permission errors
+                    holder.ivImage.setImageURI(uri)
+                } catch (e: Exception) {
+                    // Fallback to placeholder if the URI belongs to another device
+                    holder.ivImage.setImageResource(android.R.drawable.ic_menu_gallery)
+                }
+            }
         }
+
+//        // NEW: Load Image if available
+//        if (!item.imageUrl.isNullOrEmpty()) {
+//            holder.ivImage.setImageURI(Uri.parse(item.imageUrl))
+//        } else {
+//            holder.ivImage.setImageResource(android.R.drawable.ic_menu_gallery) // Fallback placeholder
+//        }
 
         // Trigger update popup when clicked
         holder.itemView.setOnClickListener {

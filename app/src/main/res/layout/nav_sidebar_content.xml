@@ -5,7 +5,7 @@
     android:layout_width="250dp"
     android:layout_height="match_parent"
     android:layout_gravity="start"
-    android:background="#2A1C15">
+    android:background="@color/coco_form_dark">
 
     <!-- NEW: This view permanently holds your gold border from top to bottom -->
     <View

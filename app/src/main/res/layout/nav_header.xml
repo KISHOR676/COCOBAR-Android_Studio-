@@ -5,7 +5,8 @@
     android:background="@android:color/transparent"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="2dp">
+    android:padding="2dp"
+    android:fitsSystemWindows="true">
 
     <ImageView
         android:layout_width="match_parent"

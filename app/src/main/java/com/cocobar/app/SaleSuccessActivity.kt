@@ -35,7 +35,11 @@ class SaleSuccessActivity : AppCompatActivity() {
         }
 
         binding.btnViewHistory.setOnClickListener {
-            Toast.makeText(this, "Sales History coming in next update!", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, SalesHistoryActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(intent)
+            finish()
+//            Toast.makeText(this, "Sales History coming in next update!", Toast.LENGTH_SHORT).show()
         }
 
         // Read the bulk order summary

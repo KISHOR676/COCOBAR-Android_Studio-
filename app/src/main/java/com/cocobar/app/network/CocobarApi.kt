@@ -99,6 +99,9 @@ interface CocobarApi {
     @GET("api/history/recent")
     fun getRecentSales(@Query("startDate") startDate: String, @Query("endDate") endDate: String): Call<List<Sale>>
 
+    @GET("/api/sales/daily-details")
+    fun getDailyDetailedSales(@Query("date") date: String): Call<List<SaleDetailDTO>>
+
     companion object {
         private const val BASE_URL = "http://10.30.165.69:8080/"
 
@@ -134,7 +137,6 @@ object CartManager {
 }
 
 
-// 1. Add Data Classes at the bottom of CocobarApi.kt
 data class RecipeIngredient(
     val rawMaterial: RawMaterial,
     val quantityRequired: Double
@@ -148,7 +150,6 @@ data class Recipe(
     val ingredients: List<RecipeIngredient>
 ) : Serializable
 
-// Add this to your data classes at the bottom of CocobarApi.kt
 data class Sale(
     val id: Long? = null,
     val recipe: Recipe,
@@ -189,23 +190,11 @@ data class DailySaleDTO(
     val itemsSold: Long
 )
 
-//object CartManager {
-//    val cartItems = mutableListOf<CartItem>()
-//
-//    fun addItem(product: Recipe, quantity: Int) {
-//        val existing = cartItems.find { it.product.id == product.id }
-//        if (existing != null) {
-//            existing.quantity += quantity
-//        } else {
-//            cartItems.add(CartItem(product, quantity))
-//        }
-//    }
-//
-//    fun getTotalPrice(): Double {
-//        return cartItems.sumOf { it.product.sellingPrice * it.quantity }
-//    }
-//
-//    fun clearCart() {
-//        cartItems.clear()
-//    }
-//}
+data class SaleDetailDTO(
+    val saleId: Long,
+    val productName: String,
+    val imageUrl: String?,
+    val quantity: Int,
+    val totalPrice: Double,
+    val saleDate: String
+)
