@@ -87,13 +87,15 @@ class InventoryActivity : AppCompatActivity() {
         navView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.nav_dashboard -> {
-                    val intent = Intent(this@InventoryActivity, DashboardActivity::class.java)
+                    val intent = Intent(this, DashboardActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                     startActivity(intent)
-                    overridePendingTransition(0, 0)
+                    overridePendingTransition(0, 0) // Warning suppressed at top of class
                     finish()
                 }
-                R.id.nav_inventory -> { }
+                R.id.nav_inventory -> {
+                    Toast.makeText(this, "Already in Inventory...", Toast.LENGTH_SHORT).show()
+                }
                 R.id.nav_recepi -> {
                     val intent = Intent(this@InventoryActivity, RecipeActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
@@ -110,6 +112,20 @@ class InventoryActivity : AppCompatActivity() {
                 }
                 R.id.nav_saleshistory -> {
                     val intent = Intent(this, SalesHistoryActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    startActivity(intent)
+                    overridePendingTransition(0, 0)
+                    finish()
+                }
+                R.id.nav_reports -> {
+                    val intent = Intent(this, ReportsActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    startActivity(intent)
+                    overridePendingTransition(0, 0)
+                    finish()
+                }
+                R.id.nav_settings -> {
+                    val intent = Intent(this, SettingsActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                     startActivity(intent)
                     overridePendingTransition(0, 0)
@@ -133,7 +149,7 @@ class InventoryActivity : AppCompatActivity() {
     }
 
     private fun fetchInventory() {
-        CocobarApi.create().getInventory().enqueue(object : Callback<List<RawMaterial>> {
+        CocobarApi.create(this).getInventory().enqueue(object : Callback<List<RawMaterial>> {
             override fun onResponse(call: Call<List<RawMaterial>>, response: Response<List<RawMaterial>>) {
                 if (response.isSuccessful) {
                     fullInventoryList = response.body() ?: emptyList() // Updated
@@ -146,7 +162,7 @@ class InventoryActivity : AppCompatActivity() {
                         fullInventoryList
                     }
 
-                    adapter = InventoryAdapter(fullInventoryList) { clickedItem ->
+                    adapter = InventoryAdapter(displayList) { clickedItem ->
                         showUpdateDialog(clickedItem)
                     }
                     binding.rvInventory.adapter = adapter
@@ -210,7 +226,7 @@ class InventoryActivity : AppCompatActivity() {
             val updatedItem = item.copy(currentQuantity = newTotalQty, unitPrice = newTotalPrice)
 
             item.itemNo?.let { id ->
-                CocobarApi.create().updateInventoryItem(id, updatedItem).enqueue(object : Callback<RawMaterial> {
+                CocobarApi.create(this).updateInventoryItem(id, updatedItem).enqueue(object : Callback<RawMaterial> {
                     override fun onResponse(call: Call<RawMaterial>, response: Response<RawMaterial>) {
                         if (response.isSuccessful) {
                             Toast.makeText(this@InventoryActivity, "Stock Added Successfully", Toast.LENGTH_SHORT).show()
@@ -233,7 +249,7 @@ class InventoryActivity : AppCompatActivity() {
                 .setMessage("Are you sure you want to completely remove this item? This action cannot be undone.")
                 .setPositiveButton("Yes, Delete") { _, _ ->
                     item.itemNo?.let { id ->
-                        CocobarApi.create().deleteInventoryItem(id).enqueue(object : Callback<Void> {
+                        CocobarApi.create(this).deleteInventoryItem(id).enqueue(object : Callback<Void> {
                             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                                 if (response.isSuccessful) {
                                     Toast.makeText(this@InventoryActivity, "${item.itemName} deleted", Toast.LENGTH_SHORT).show()

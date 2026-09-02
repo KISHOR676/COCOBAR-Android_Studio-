@@ -108,7 +108,7 @@ class AddInventoryItemActivity : AppCompatActivity() {
         )
 
         // Send to Spring Boot Backend
-        CocobarApi.create().addInventoryItem(newItem).enqueue(object : Callback<RawMaterial> {
+        CocobarApi.create(this).addInventoryItem(newItem).enqueue(object : Callback<RawMaterial> {
             override fun onResponse(call: Call<RawMaterial>, response: Response<RawMaterial>) {
                 if (response.isSuccessful) {
                     Toast.makeText(this@AddInventoryItemActivity, "Item Saved Successfully!", Toast.LENGTH_SHORT).show()

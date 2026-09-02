@@ -4,8 +4,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/coco_main_beige"
-    android:fitsSystemWindows="true">
+    android:background="@color/coco_main_beige">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -38,9 +37,10 @@
             android:layout_height="0dp"
             android:clipToPadding="false"
             android:padding="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/bottom_nav_wrapper"
             app:layout_constraintTop_toBottomOf="@id/etSearchProduct" />
 
+        <!-- Floating Cart Button now sits above the bottom nav -->
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/fabCart"
             android:layout_width="wrap_content"
@@ -49,11 +49,85 @@
             android:text="View Order"
             android:textColor="@color/white"
             android:backgroundTint="#388E3C"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/bottom_nav_wrapper"
             app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- NEW: Bottom Navigation Bar Wrapper -->
+        <FrameLayout
+            android:id="@+id/bottom_nav_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <include layout="@layout/layout_bottom_navigation" />
+        </FrameLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include layout="@layout/nav_sidebar_content" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
+
+
+
+
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    android:id="@+id/drawer_layout"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:background="@color/coco_main_beige">-->
+
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent">-->
+
+<!--        <androidx.appcompat.widget.Toolbar-->
+<!--            android:id="@+id/toolbar"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="?attr/actionBarSize"-->
+<!--            android:background="@color/cocobar_banner_bg"-->
+<!--            app:title="Sell Products"-->
+<!--            app:titleTextColor="@color/coco_gold"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--        <EditText-->
+<!--            android:id="@+id/etSearchProduct"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="50dp"-->
+<!--            android:layout_margin="16dp"-->
+<!--            android:background="@color/white"-->
+<!--            android:drawableStart="@android:drawable/ic_menu_search"-->
+<!--            android:drawablePadding="8dp"-->
+<!--            android:hint="Search products to sell..."-->
+<!--            android:padding="12dp"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/toolbar" />-->
+
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/rvProducts"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:clipToPadding="false"-->
+<!--            android:padding="16dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/etSearchProduct" />-->
+
+<!--        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton-->
+<!--            android:id="@+id/fabCart"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_margin="16dp"-->
+<!--            android:text="View Order"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:backgroundTint="#388E3C"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent" />-->
+
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--    <include layout="@layout/nav_sidebar_content" />-->
+
+<!--</androidx.drawerlayout.widget.DrawerLayout>-->

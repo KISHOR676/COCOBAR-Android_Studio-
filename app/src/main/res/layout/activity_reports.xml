@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/coco_main_beige">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/cocobar_banner_bg"
+            app:title="Generate Reports"
+            app:titleTextColor="@color/coco_gold" />
+
+        <!-- Date Range Selector -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:elevation="2dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@android:drawable/ic_menu_my_calendar"
+                app:tint="#594A42" />
+
+            <TextView
+                android:id="@+id/tvDateRange"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="12dp"
+                android:textColor="#312018"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:text="Select Date Range" />
+
+            <Button
+                android:id="@+id/btnChangeDates"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="Change"
+                android:textSize="12sp"
+                android:backgroundTint="#4E2B1D"
+                android:textColor="@color/white"/>
+        </LinearLayout>
+
+        <!-- Generate Button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="24dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@android:drawable/ic_menu_sort_by_size"
+                app:tint="#D8B07D"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ready to compile sales data"
+                android:textColor="#594A42"
+                android:textSize="16sp"
+                android:layout_marginBottom="32dp"/>
+
+            <Button
+                android:id="@+id/btnGenerateReport"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:backgroundTint="#388E3C"
+                android:text="Generate &amp; Share Report"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:icon="@android:drawable/ic_menu_share"
+                app:iconGravity="textStart"
+                app:iconTint="@color/white" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <include layout="@layout/nav_sidebar_content" />
+</androidx.drawerlayout.widget.DrawerLayout>

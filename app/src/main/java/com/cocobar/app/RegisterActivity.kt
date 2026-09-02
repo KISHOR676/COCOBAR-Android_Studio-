@@ -25,7 +25,7 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var btnRegister: Button
     private lateinit var tvFooterText: TextView
 
-    private val api: CocobarApi by lazy { CocobarApi.create() }
+    private val api: CocobarApi by lazy { CocobarApi.create(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

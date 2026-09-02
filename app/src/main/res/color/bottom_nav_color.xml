@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Color when clicked/selected (Dark Brown to contrast against the indicator pill) -->
+    <item android:color="#2A1C15" android:state_checked="true" />
+    <!-- Default Icon Color (Gold) -->
+    <item android:color="#D8B07D" />
+</selector>

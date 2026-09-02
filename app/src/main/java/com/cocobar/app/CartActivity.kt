@@ -76,7 +76,7 @@ class CartActivity : AppCompatActivity() {
             SaleRequest(it.product.id!!, it.quantity)
         }
 
-        CocobarApi.create().recordBulkSale(requests).enqueue(object : Callback<List<Sale>> {
+        CocobarApi.create(this).recordBulkSale(requests).enqueue(object : Callback<List<Sale>> {
             override fun onResponse(call: Call<List<Sale>>, response: Response<List<Sale>>) {
                 if (response.isSuccessful) {
                     val finalTotal = CartManager.getTotalPrice()

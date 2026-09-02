@@ -1,6 +1,5 @@
 package com.cocobar.app
 
-import androidx.core.view.GravityCompat
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -40,7 +39,6 @@ class DashboardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
 
-        // Initialize UI Elements
         tvTotalInventory = findViewById(R.id.tv_total_inventory)
         tvTodaysSales = findViewById(R.id.tv_todays_sales)
         tvTodaysProfit = findViewById(R.id.tv_todays_profit)
@@ -48,17 +46,14 @@ class DashboardActivity : AppCompatActivity() {
         tvCurrentDate = findViewById(R.id.tv_current_date)
         tvWelcomeName = findViewById(R.id.tv_welcome_name)
 
-        // Find the card containers
         val cardInventory = findViewById<android.widget.LinearLayout>(R.id.card_inventory)
         val cardLowStock = findViewById<android.widget.LinearLayout>(R.id.card_low_stock)
 
-        // Standard click: Open Inventory normally
         cardInventory.setOnClickListener {
             val intent = Intent(this, InventoryActivity::class.java)
             startActivity(intent)
         }
 
-        // Filtered click: Open Inventory and pass a flag to show ONLY low stock
         cardLowStock.setOnClickListener {
             val intent = Intent(this, InventoryActivity::class.java)
             intent.putExtra("FILTER_LOW_STOCK", true)
@@ -66,37 +61,45 @@ class DashboardActivity : AppCompatActivity() {
         }
 
         setupNavigationDrawer()
+        setupBottomNavigation() // <-- NEW: Called here
         fetchDashboardData()
     }
 
     override fun onResume() {
         super.onResume()
-        // Force the sidebar to highlight "Dashboard" whenever this screen appears
         val navView = findViewById<NavigationView>(R.id.nav_view)
         navView.setCheckedItem(R.id.nav_dashboard)
+
+        // Also highlight the bottom nav correctly on resume
+        val bottomNav = findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottom_navigation)
+        bottomNav.selectedItemId = R.id.nav_bottom_dashboard
     }
 
     private fun fetchDashboardData() {
-        // Set dynamic date in header
         val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
         tvCurrentDate.text = dateFormat.format(Date())
 
-        // --- READ THE SAVED NAME FROM LOGIN ---
         val sharedPref = getSharedPreferences("CocobarPrefs", MODE_PRIVATE)
-        val savedName = sharedPref.getString("USER_NAME", "Cocobar") // "Cocobar" is the fallback if name is missing
+        val savedName = sharedPref.getString("USER_NAME", "Cocobar")
 
-        // Capitalize the first letter for a clean UI (e.g., "abc" becomes "Abc")
         val formattedName = savedName?.replaceFirstChar {
             if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
         }
 
         tvWelcomeName.text = "Welcome back, $formattedName!"
-        // --------------------------------------
+
+//        val sharedPref = getSharedPreferences("CocobarPrefs", MODE_PRIVATE)
+        val savedBaseUrl = sharedPref.getString("BASE_URL", "http://10.30.165.69:8080")
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://10.30.165.69:8080") // Ensure your IP is still correct
+            .baseUrl(savedBaseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+
+//        val retrofit = Retrofit.Builder()
+//            .baseUrl("http://10.30.165.69:8080")
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
 
         val apiService = retrofit.create(ApiService::class.java)
 
@@ -110,7 +113,6 @@ class DashboardActivity : AppCompatActivity() {
                     tvTodaysProfit.text = "₹ ${data.todaysProfit}"
                     tvLowStock.text = data.lowStockItems.toString()
 
-                    // --- CHART RENDERING LOGIC ---
                     val chart = findViewById<LineChart>(R.id.sales_chart)
                     val entries = ArrayList<Entry>()
                     val daysOfWeek = arrayOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
@@ -129,16 +131,14 @@ class DashboardActivity : AppCompatActivity() {
                         val goldColor = Color.parseColor("#D8B07D")
                         val dataSet = LineDataSet(entries, "Weekly Sales")
 
-                        // Line Styling (Curved and Filled)
-                        dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER // Makes it curvy
+                        dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
                         dataSet.color = goldColor
                         dataSet.lineWidth = 3f
                         dataSet.setDrawFilled(true)
                         dataSet.fillColor = goldColor
-                        dataSet.fillAlpha = 60 // Transparent fill
-                        dataSet.setDrawValues(false) // Hides numbers floating above dots
+                        dataSet.fillAlpha = 60
+                        dataSet.setDrawValues(false)
 
-                        // Dot Styling (Hollow circles)
                         dataSet.setDrawCircles(true)
                         dataSet.circleRadius = 5f
                         dataSet.setCircleColor(goldColor)
@@ -147,26 +147,21 @@ class DashboardActivity : AppCompatActivity() {
 
                         chart.data = LineData(dataSet)
 
-                        // --- AXIS STYLING ---
                         val darkBrown = Color.parseColor("#312018")
-
-                        // X-Axis (Days of week)
                         chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
                         chart.xAxis.textColor = darkBrown
                         chart.xAxis.valueFormatter = IndexAxisValueFormatter(daysOfWeek)
                         chart.xAxis.granularity = 1f
-                        chart.xAxis.setDrawGridLines(false) // Removes vertical bars
+                        chart.xAxis.setDrawGridLines(false)
                         chart.xAxis.setDrawAxisLine(false)
 
-                        // Y-Axis (Intervals of 500)
                         chart.axisLeft.textColor = darkBrown
-                        chart.axisLeft.granularity = 500f // Forces 500 steps
+                        chart.axisLeft.granularity = 500f
                         chart.axisLeft.setDrawGridLines(true)
-                        chart.axisLeft.gridColor = Color.parseColor("#E5D4BE") // Soft grid
+                        chart.axisLeft.gridColor = Color.parseColor("#E5D4BE")
                         chart.axisLeft.setDrawAxisLine(false)
-                        chart.axisRight.isEnabled = false // Hides right axis
+                        chart.axisRight.isEnabled = false
 
-                        // Chart Background cleanup
                         chart.description.isEnabled = false
                         chart.legend.isEnabled = false
                         chart.setDrawGridBackground(false)
@@ -186,6 +181,42 @@ class DashboardActivity : AppCompatActivity() {
         })
     }
 
+    // NEW: Bottom Navigation Logic
+    private fun setupBottomNavigation() {
+        val bottomNav = findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottom_navigation)
+
+        // Highlight Dashboard
+        bottomNav.selectedItemId = R.id.nav_bottom_dashboard
+
+        bottomNav.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_bottom_dashboard -> {
+                    // Already here
+                    true
+                }
+                R.id.nav_bottom_product -> {
+                    val intent = Intent(this, ProductsActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP }
+                    startActivity(intent)
+                    overridePendingTransition(0, 0)
+                    true
+                }
+                R.id.nav_bottom_sales -> {
+                    val intent = Intent(this, SalesHistoryActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP }
+                    startActivity(intent)
+                    overridePendingTransition(0, 0)
+                    true
+                }
+                R.id.nav_bottom_settings -> {
+                    val intent = Intent(this, SettingsActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP }
+                    startActivity(intent)
+                    overridePendingTransition(0, 0)
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
     private fun setupNavigationDrawer() {
         drawerLayout = findViewById(R.id.drawer_layout)
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
@@ -199,139 +230,64 @@ class DashboardActivity : AppCompatActivity() {
         toggle.syncState()
 
         val navView = findViewById<NavigationView>(R.id.nav_view)
-
-        // Highlight Dashboard by default when opened
         navView.setCheckedItem(R.id.nav_dashboard)
 
-        // 1. Navigation Menu Item Clicks
         navView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.nav_dashboard -> {
-                    // Already here, do nothing
+                    Toast.makeText(this, "Already in Dashboard...", Toast.LENGTH_SHORT).show()
                 }
                 R.id.nav_inventory -> {
-                    Toast.makeText(this, "Opening Inventory...", Toast.LENGTH_SHORT).show()
-//                    // Launch the Inventory Activity
-//                    val intent = Intent(this, InventoryActivity::class.java)
-//                    startActivity(intent)
-
                     val intent = Intent(this@DashboardActivity, InventoryActivity::class.java)
-                    // Safe approach: Creates it if dead, reuses it if alive
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                     startActivity(intent)
-                    overridePendingTransition(0, 0) // Kills the laggy slide animation
+                    overridePendingTransition(0, 0)
                 }
                 R.id.nav_recepi -> {
                     val intent = Intent(this, RecipeActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                     startActivity(intent)
                     overridePendingTransition(0, 0)
-                    // (Add finish() here if you are editing InventoryActivity, leave finish() out if you are editing DashboardActivity)
                 }
                 R.id.nav_product -> {
                     val intent = Intent(this, ProductsActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                     startActivity(intent)
                     overridePendingTransition(0, 0)
-                    finish()
                 }
                 R.id.nav_saleshistory -> {
                     val intent = Intent(this, SalesHistoryActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                     startActivity(intent)
                     overridePendingTransition(0, 0)
-                    finish()
+                }
+                R.id.nav_reports -> {
+                    val intent = Intent(this, ReportsActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    startActivity(intent)
+                    overridePendingTransition(0, 0)
                 }
                 R.id.nav_settings -> {
-                    Toast.makeText(this, "Opening Settings...", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, SettingsActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    startActivity(intent)
+                    overridePendingTransition(0, 0)
+                    finish()
                 }
             }
             drawerLayout.closeDrawers()
             true
-        } // <-- The listener safely closes here
+        }
 
-        // 2. CUSTOM LOGOUT BUTTON LOGIC (Safely outside the listener above)
         val btnLogout = findViewById<android.widget.LinearLayout>(R.id.btn_custom_logout)
         btnLogout.setOnClickListener {
-            // Wipe the saved user session from the phone
             val sharedPref = getSharedPreferences("CocobarPrefs", MODE_PRIVATE)
             sharedPref.edit().clear().apply()
 
-            // Go back to Login Activity
             val intent = Intent(this, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
             finish()
         }
     }
-
-//    private fun setupNavigationDrawer() {
-//        drawerLayout = findViewById(R.id.drawer_layout)
-//        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
-//        setSupportActionBar(toolbar)
-//
-//        val toggle = ActionBarDrawerToggle(
-//            this, drawerLayout, toolbar,
-//            R.string.nav_open, R.string.nav_close
-//        )
-//        drawerLayout.addDrawerListener(toggle)
-//        toggle.syncState()
-//
-//        val navView = findViewById<NavigationView>(R.id.nav_view)
-//        navView.setNavigationItemSelectedListener { menuItem ->
-//            when (menuItem.itemId) {
-//                R.id.nav_dashboard -> { /* Already on this screen */ }
-//            }
-//            drawerLayout.closeDrawers()
-//            true
-//        }
-//    }
-
-//    private fun setupNavigationDrawer() {
-//        drawerLayout = findViewById(R.id.drawer_layout)
-//        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
-//        setSupportActionBar(toolbar)
-//
-//        val toggle = ActionBarDrawerToggle(
-//            this, drawerLayout, toolbar,
-//            R.string.nav_open, R.string.nav_close
-//        )
-//        drawerLayout.addDrawerListener(toggle)
-//        toggle.syncState()
-//
-//        val navView = findViewById<NavigationView>(R.id.nav_view)
-//
-//        // Highlight Dashboard by default when opened
-//        navView.setCheckedItem(R.id.nav_dashboard)
-//
-//        navView.setNavigationItemSelectedListener { menuItem ->
-//            when (menuItem.itemId) {
-//                R.id.nav_dashboard -> {
-//                    // Already here, do nothing
-//                }
-//                R.id.nav_inventory -> {
-//                    // startActivity(Intent(this, InventoryActivity::class.java))
-//                    Toast.makeText(this, "Opening Inventory...", Toast.LENGTH_SHORT).show()
-//                }
-//                R.id.nav_settings -> {
-//                    // startActivity(Intent(this, SettingsActivity::class.java))
-//                    Toast.makeText(this, "Opening Settings...", Toast.LENGTH_SHORT).show()
-//                }
-//                R.id.nav_logout -> {
-//                    // 1. Wipe the saved user session from the phone
-//                    val sharedPref = getSharedPreferences("CocobarPrefs", MODE_PRIVATE)
-//                    sharedPref.edit().clear().apply()
-//
-//                    // 2. Go back to Login Activity
-//                    val intent = Intent(this, LoginActivity::class.java)
-//                    // This flag ensures the user can't press 'back' to return to the dashboard
-//                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//                    startActivity(intent)
-//                    finish()
-//                }
-//            }
-//            drawerLayout.closeDrawers()
-//            true
-//        }
-//    }
 }

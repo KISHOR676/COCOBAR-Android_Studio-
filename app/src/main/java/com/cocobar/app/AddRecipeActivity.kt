@@ -80,7 +80,7 @@ class AddRecipeActivity : AppCompatActivity() {
     }
 
     private fun fetchInventoryForSpinners() {
-        CocobarApi.create().getInventory().enqueue(object : Callback<List<RawMaterial>> {
+        CocobarApi.create(this).getInventory().enqueue(object : Callback<List<RawMaterial>> {
             override fun onResponse(call: Call<List<RawMaterial>>, response: Response<List<RawMaterial>>) {
                 if (response.isSuccessful) {
                     fullInventoryList = response.body() ?: emptyList()
@@ -187,7 +187,7 @@ class AddRecipeActivity : AppCompatActivity() {
         // Decide whether to POST (Add) or PUT (Update)
         if (recipeToEdit != null) {
             recipeToEdit!!.id?.let { id ->
-                CocobarApi.create().updateRecipe(id, newRecipe).enqueue(object : Callback<Recipe> {
+                CocobarApi.create(this).updateRecipe(id, newRecipe).enqueue(object : Callback<Recipe> {
                     override fun onResponse(call: Call<Recipe>, response: Response<Recipe>) {
                         Toast.makeText(this@AddRecipeActivity, "Recipe Updated!", Toast.LENGTH_SHORT).show()
                         finish()
@@ -198,7 +198,7 @@ class AddRecipeActivity : AppCompatActivity() {
                 })
             }
         } else {
-            CocobarApi.create().addRecipe(newRecipe).enqueue(object : Callback<Recipe> {
+            CocobarApi.create(this).addRecipe(newRecipe).enqueue(object : Callback<Recipe> {
                 override fun onResponse(call: Call<Recipe>, response: Response<Recipe>) {
                     Toast.makeText(this@AddRecipeActivity, "Recipe Saved!", Toast.LENGTH_SHORT).show()
                     finish()

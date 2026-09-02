@@ -31,7 +31,7 @@ class DailySalesDetailActivity : AppCompatActivity() {
     }
 
     private fun fetchDetailedSales(date: String) {
-        CocobarApi.create().getDailyDetailedSales(date).enqueue(object : Callback<List<SaleDetailDTO>> {
+        CocobarApi.create(this).getDailyDetailedSales(date).enqueue(object : Callback<List<SaleDetailDTO>> {
             override fun onResponse(call: Call<List<SaleDetailDTO>>, response: Response<List<SaleDetailDTO>>) {
                 if (response.isSuccessful) {
                     val data = response.body() ?: emptyList()

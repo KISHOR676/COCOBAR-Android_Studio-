@@ -92,7 +92,9 @@ class RecipeActivity : AppCompatActivity() {
                     overridePendingTransition(0, 0) // Warning suppressed at top of class
                     finish()
                 }
-                R.id.nav_recepi -> { /* Already here */ }
+                R.id.nav_recepi -> {
+                    Toast.makeText(this, "Already in Recepi's...", Toast.LENGTH_SHORT).show()
+                }
                 R.id.nav_product -> {
                     val intent = Intent(this, ProductsActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
@@ -100,8 +102,22 @@ class RecipeActivity : AppCompatActivity() {
                     overridePendingTransition(0, 0)
                     finish()
                 }
+                R.id.nav_reports -> {
+                    val intent = Intent(this, ReportsActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    startActivity(intent)
+                    overridePendingTransition(0, 0)
+                    finish()
+                }
                 R.id.nav_saleshistory -> {
                     val intent = Intent(this, SalesHistoryActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    startActivity(intent)
+                    overridePendingTransition(0, 0)
+                    finish()
+                }
+                R.id.nav_settings -> {
+                    val intent = Intent(this, SettingsActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                     startActivity(intent)
                     overridePendingTransition(0, 0)
@@ -125,7 +141,7 @@ class RecipeActivity : AppCompatActivity() {
     }
 
     private fun fetchRecipes() {
-        CocobarApi.create().getRecipes().enqueue(object : Callback<List<Recipe>> {
+        CocobarApi.create(this).getRecipes().enqueue(object : Callback<List<Recipe>> {
             override fun onResponse(call: Call<List<Recipe>>, response: Response<List<Recipe>>) {
                 if (response.isSuccessful) {
                     fullRecipeList = response.body() ?: emptyList()
@@ -168,7 +184,7 @@ class RecipeActivity : AppCompatActivity() {
     }
 
     private fun deleteRecipe(id: Long) {
-        CocobarApi.create().deleteRecipe(id).enqueue(object : Callback<Void> {
+        CocobarApi.create(this).deleteRecipe(id).enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
                     Toast.makeText(this@RecipeActivity, "Recipe Deleted", Toast.LENGTH_SHORT).show()

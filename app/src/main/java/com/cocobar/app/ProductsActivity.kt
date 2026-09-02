@@ -16,13 +16,12 @@ import com.google.android.material.navigation.NavigationView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import kotlin.jvm.java
 
 @Suppress("DEPRECATION")
 class ProductsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityProductsBinding
-    private lateinit var adapter: ProductAdapter // Correctly set to ProductAdapter
+    private lateinit var adapter: ProductAdapter
     private var fullProductList: List<Recipe> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +30,8 @@ class ProductsActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupNavigationDrawer()
+        setupBottomNavigation() // <-- NEW: Called here
+
         binding.rvProducts.layoutManager = LinearLayoutManager(this)
 
         binding.etSearchProduct.addTextChangedListener(object : TextWatcher {
@@ -55,6 +56,14 @@ class ProductsActivity : AppCompatActivity() {
         super.onResume()
         fetchProducts()
 
+        // Highlight Product in sidebar
+        val navView = findViewById<NavigationView>(R.id.nav_view)
+        navView.setCheckedItem(R.id.nav_product)
+
+        // Highlight Product in bottom nav
+        val bottomNav = findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottom_navigation)
+        bottomNav.selectedItemId = R.id.nav_bottom_product
+
         // Update the Floating Button every time we return to the list
         val totalItems = com.cocobar.app.network.CartManager.cartItems.sumOf { it.quantity }
         val totalPrice = com.cocobar.app.network.CartManager.getTotalPrice()
@@ -67,6 +76,43 @@ class ProductsActivity : AppCompatActivity() {
             }
         } else {
             binding.fabCart.visibility = android.view.View.GONE
+        }
+    }
+
+    // NEW: Bottom Navigation Logic
+    private fun setupBottomNavigation() {
+        val bottomNav = findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottom_navigation)
+
+        bottomNav.selectedItemId = R.id.nav_bottom_product
+
+        bottomNav.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_bottom_dashboard -> {
+                    val intent = Intent(this, DashboardActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP }
+                    startActivity(intent)
+                    overridePendingTransition(0, 0)
+                    finish()
+                    true
+                }
+                R.id.nav_bottom_product -> {
+                    // Already here
+                    true
+                }
+                R.id.nav_bottom_sales -> {
+                    val intent = Intent(this, SalesHistoryActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP }
+                    startActivity(intent)
+                    overridePendingTransition(0, 0)
+                    finish()
+                    true
+                }
+                R.id.nav_bottom_settings -> {
+                    val intent = Intent(this, SettingsActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP }
+                    startActivity(intent)
+                    overridePendingTransition(0, 0)
+                    true
+                }
+                else -> false
+            }
         }
     }
 
@@ -106,9 +152,25 @@ class ProductsActivity : AppCompatActivity() {
                     overridePendingTransition(0, 0)
                     finish()
                 }
-                R.id.nav_product -> { /* Already here */ }
+                R.id.nav_product -> {
+                    Toast.makeText(this, "Already in Products...", Toast.LENGTH_SHORT).show()
+                }
                 R.id.nav_saleshistory -> {
                     val intent = Intent(this, SalesHistoryActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    startActivity(intent)
+                    overridePendingTransition(0, 0)
+                    finish()
+                }
+                R.id.nav_reports -> {
+                    val intent = Intent(this, ReportsActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    startActivity(intent)
+                    overridePendingTransition(0, 0)
+                    finish()
+                }
+                R.id.nav_settings -> {
+                    val intent = Intent(this, SettingsActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                     startActivity(intent)
                     overridePendingTransition(0, 0)
@@ -129,7 +191,7 @@ class ProductsActivity : AppCompatActivity() {
     }
 
     private fun fetchProducts() {
-        CocobarApi.create().getRecipes().enqueue(object : Callback<List<Recipe>> {
+        CocobarApi.create(this).getRecipes( ).enqueue(object : Callback<List<Recipe>> {
             override fun onResponse(call: Call<List<Recipe>>, response: Response<List<Recipe>>) {
                 if (response.isSuccessful) {
                     fullProductList = response.body() ?: emptyList()

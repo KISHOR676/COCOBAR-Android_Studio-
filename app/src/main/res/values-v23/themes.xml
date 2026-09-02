@@ -1,9 +1,10 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
-    <style name="Theme.COCOBAR" parent="Base.Theme.COCOBAR">
-        <!-- Transparent system bars for edge-to-edge. -->
-<!--        <item name="android:statusBarColor">@android:color/transparent</item>-->
-        <item name="android:statusBarColor">#000000</item>
-<!--        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>-->
+    <style name="Theme.COCOBAR"
+        parent="Base.Theme.COCOBAR">
+
+        <item name="android:windowLightStatusBar">false</item>
+
     </style>
+
 </resources>

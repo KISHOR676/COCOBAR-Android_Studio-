@@ -43,7 +43,7 @@ class TopSellingActivity : AppCompatActivity() {
     }
 
     private fun fetchTopSelling() {
-        CocobarApi.create().getTopSelling(startDateStr, endDateStr).enqueue(object : Callback<List<TopSellingDTO>> {
+        CocobarApi.create(this).getTopSelling(startDateStr, endDateStr).enqueue(object : Callback<List<TopSellingDTO>> {
             override fun onResponse(call: Call<List<TopSellingDTO>>, response: Response<List<TopSellingDTO>>) {
                 if (response.isSuccessful) {
                     val data = response.body() ?: emptyList()

@@ -22,7 +22,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var btnLogin: Button
     private lateinit var tvFooterRegister: TextView
 
-    private val api: CocobarApi by lazy { CocobarApi.create() }
+    private val api: CocobarApi by lazy { CocobarApi.create(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

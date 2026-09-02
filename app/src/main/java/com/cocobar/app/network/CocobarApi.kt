@@ -102,14 +102,42 @@ interface CocobarApi {
     @GET("/api/sales/daily-details")
     fun getDailyDetailedSales(@Query("date") date: String): Call<List<SaleDetailDTO>>
 
-    companion object {
-        private const val BASE_URL = "http://10.30.165.69:8080/"
+    @GET("/api/reports/export")
+    fun getExportReport(@Query("startDate") startDate: String, @Query("endDate") endDate: String): Call<ExportReportDTO>
 
-        fun create(): CocobarApi {
+    // Add inside your API interface:0
+    @POST("/api/users/change-password")
+    fun changePassword(@Body request: ChangePasswordRequest): Call<String>
+
+//    companion object {
+//        private const val BASE_URL = "http://10.30.165.69:8080/"
+//
+//        fun create(): CocobarApi {
+//            val retrofit = Retrofit.Builder()
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .baseUrl(BASE_URL)
+//                .build()
+//            return retrofit.create(CocobarApi::class.java)
+//        }
+//    }
+
+    companion object {
+        // Fallback URL if nothing is saved yet
+        private const val DEFAULT_BASE_URL = "http://10.30.165.69:8080/"
+
+        // Added 'context' parameter to read the saved IP
+        fun create(context: android.content.Context): CocobarApi {
+            val sharedPref = context.getSharedPreferences("CocobarPrefs", android.content.Context.MODE_PRIVATE)
+            val savedBaseUrl = sharedPref.getString("BASE_URL", DEFAULT_BASE_URL) ?: DEFAULT_BASE_URL
+
+            // Retrofit crashes if the Base URL does not end with a trailing slash
+            val finalUrl = if (savedBaseUrl.endsWith("/")) savedBaseUrl else "$savedBaseUrl/"
+
             val retrofit = Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(BASE_URL)
+                .addConverterFactory(retrofit2.converter.gson.GsonConverterFactory.create())
+                .baseUrl(finalUrl)
                 .build()
+
             return retrofit.create(CocobarApi::class.java)
         }
     }
@@ -197,4 +225,23 @@ data class SaleDetailDTO(
     val quantity: Int,
     val totalPrice: Double,
     val saleDate: String
+)
+
+data class TopItemDTO(
+    val itemName: String,
+    val quantitySold: Long
+)
+
+data class ExportReportDTO(
+    val date: String,
+    val totalSales: Double,
+    val totalOrders: Int,
+    val averageOrderValue: Double,
+    val topItems: List<TopItemDTO>
+)
+
+data class ChangePasswordRequest(
+    val businessEmail: String,
+    val oldPassword: String,
+    val newPassword: String
 )
