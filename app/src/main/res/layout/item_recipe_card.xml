@@ -16,15 +16,26 @@
         android:layout_height="wrap_content"
         android:padding="12dp">
 
-        <ImageView
-            android:id="@+id/ivRecipeImage"
+        <!-- Wrapper card for smooth rounded corners -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardRecipeImage"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:background="#F5F0E6"
-            android:scaleType="centerCrop"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp"
+            app:strokeWidth="0dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <ImageView
+                android:id="@+id/ivRecipeImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#F5F0E6"
+                android:scaleType="centerCrop" />
+
+        </com.google.android.material.card.MaterialCardView>
 
         <TextView
             android:id="@+id/tvRecipeName"
@@ -36,9 +47,33 @@
             android:textStyle="bold"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            app:layout_constraintStart_toEndOf="@id/ivRecipeImage"
-            app:layout_constraintEnd_toStartOf="@id/tvRecipePrice"
+            app:layout_constraintStart_toEndOf="@id/cardRecipeImage"
+            app:layout_constraintEnd_toStartOf="@+id/tvRecipePrice"
             app:layout_constraintTop_toTopOf="parent"/>
+
+<!--        <ImageView-->
+<!--            android:id="@+id/ivRecipeImage"-->
+<!--            android:layout_width="60dp"-->
+<!--            android:layout_height="60dp"-->
+<!--            android:background="#F5F0E6"-->
+<!--            android:scaleType="centerCrop"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"/>-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/tvRecipeName"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Product Name"-->
+<!--            android:textColor="@color/coco_divider_gold"-->
+<!--            android:textSize="18sp"-->
+<!--            android:textStyle="bold"-->
+<!--            android:layout_marginStart="16dp"-->
+<!--            android:layout_marginEnd="16dp"-->
+<!--            app:layout_constraintStart_toEndOf="@id/ivRecipeImage"-->
+<!--            app:layout_constraintEnd_toStartOf="@id/tvRecipePrice"-->
+<!--            app:layout_constraintTop_toTopOf="parent"/>-->
 
         <TextView
             android:id="@+id/tvRecipePrice"

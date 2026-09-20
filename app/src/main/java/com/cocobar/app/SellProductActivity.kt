@@ -34,21 +34,33 @@ class SellProductActivity : AppCompatActivity() {
         binding.tvProductPrice.text = "₹${String.format("%.2f", product.sellingPrice)} per unit"
         binding.tvProductAvailable.text = "Available: $maxAvailable"
 
-        // 1. Set a default placeholder first
-        binding.ivProductImage.setImageResource(android.R.drawable.ic_menu_gallery)
-
-        // 2. Safely attempt to load the real image
-        val imageUrl = intent.getStringExtra("PRODUCT_IMAGE_URL") // Or however you get your image string
-        if (!imageUrl.isNullOrBlank()) {
-            try {
-                binding.ivProductImage.setImageURI(Uri.parse(imageUrl))
-            } catch (e: SecurityException) {
-                // If Android blocks the image, just keep the placeholder instead of crashing!
-                binding.ivProductImage.setImageResource(android.R.drawable.ic_menu_gallery)
-            } catch (e: Exception) {
-                binding.ivProductImage.setImageResource(android.R.drawable.ic_menu_gallery)
-            }
+        // Safely load the image using Glide from the passed product object
+        if (!product.imageUrl.isNullOrBlank()) {
+            com.bumptech.glide.Glide.with(this)
+                .load(product.imageUrl)
+                .placeholder(android.R.drawable.ic_menu_gallery)
+                .error(android.R.drawable.ic_menu_gallery)
+                .centerCrop()
+                .into(binding.ivProductImage)
+        } else {
+            binding.ivProductImage.setImageResource(android.R.drawable.ic_menu_gallery)
         }
+
+//        // 1. Set a default placeholder first
+//        binding.ivProductImage.setImageResource(android.R.drawable.ic_menu_gallery)
+//
+//        // 2. Safely attempt to load the real image
+//        val imageUrl = intent.getStringExtra("PRODUCT_IMAGE_URL") // Or however you get your image string
+//        if (!imageUrl.isNullOrBlank()) {
+//            try {
+//                binding.ivProductImage.setImageURI(Uri.parse(imageUrl))
+//            } catch (e: SecurityException) {
+//                // If Android blocks the image, just keep the placeholder instead of crashing!
+//                binding.ivProductImage.setImageResource(android.R.drawable.ic_menu_gallery)
+//            } catch (e: Exception) {
+//                binding.ivProductImage.setImageResource(android.R.drawable.ic_menu_gallery)
+//            }
+//        }
 
 //        if (!product.imageUrl.isNullOrEmpty()) {
 //            try { binding.ivProductImage.setImageURI(Uri.parse(product.imageUrl)) }

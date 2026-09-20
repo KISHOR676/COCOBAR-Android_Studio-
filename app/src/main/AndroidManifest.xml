@@ -38,7 +38,7 @@
         <activity
             android:name=".InventoryActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name=".AddInventoryItemActivity"
@@ -47,7 +47,7 @@
 
         <activity android:name=".RecipeActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustPan" />
 
         <activity android:name=".AddRecipeActivity"
             android:exported="false"
@@ -55,7 +55,7 @@
 
         <activity android:name=".ProductsActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustPan" />
 
         <activity android:name=".SellProductActivity"
             android:exported="false"
@@ -89,7 +89,6 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
-        <!-- The app will now start here -->
         <activity
             android:name=".DashboardActivity"
             android:exported="false"

@@ -220,17 +220,32 @@ class InventoryActivity : AppCompatActivity() {
             val addedQty = qtyInput.text.toString().toDoubleOrNull() ?: 0.0
             val addedCost = priceInput.text.toString().toDoubleOrNull() ?: 0.0
 
-            val newTotalQty = item.currentQuantity + addedQty
-            val newTotalPrice = item.unitPrice + addedCost
+            // 1. Calculate the financial value of the stock currently sitting in the app
+            val currentTotalValue = item.currentQuantity * item.unitPrice
 
-            val updatedItem = item.copy(currentQuantity = newTotalQty, unitPrice = newTotalPrice)
+            // 2. Add the old stock value and the new stock cost together
+            val newTotalValue = currentTotalValue + addedCost
+            val newTotalQty = item.currentQuantity + addedQty
+
+            // 3. Calculate the new weighted average unit price for the database
+            val newUnitPrice = if (newTotalQty > 0) {
+                newTotalValue / newTotalQty
+            } else {
+                0.0
+            }
+
+            // Update the item with the new total stock and the newly blended market price
+            val updatedItem = item.copy(
+                currentQuantity = newTotalQty,
+                unitPrice = newUnitPrice
+            )
 
             item.itemNo?.let { id ->
                 CocobarApi.create(this).updateInventoryItem(id, updatedItem).enqueue(object : Callback<RawMaterial> {
                     override fun onResponse(call: Call<RawMaterial>, response: Response<RawMaterial>) {
                         if (response.isSuccessful) {
                             Toast.makeText(this@InventoryActivity, "Stock Added Successfully", Toast.LENGTH_SHORT).show()
-                            binding.etSearchInventory.text.clear() // Clear search on success
+                            binding.etSearchInventory.text.clear()
                             fetchInventory()
                         }
                     }
@@ -240,6 +255,31 @@ class InventoryActivity : AppCompatActivity() {
                 })
             }
         }
+
+//        builder.setPositiveButton("Add Stock") { _, _ ->
+//            val addedQty = qtyInput.text.toString().toDoubleOrNull() ?: 0.0
+//            val addedCost = priceInput.text.toString().toDoubleOrNull() ?: 0.0
+//
+//            val newTotalQty = item.currentQuantity + addedQty
+//            val newTotalPrice = item.unitPrice + addedCost
+//
+//            val updatedItem = item.copy(currentQuantity = newTotalQty, unitPrice = newTotalPrice)
+//
+//            item.itemNo?.let { id ->
+//                CocobarApi.create(this).updateInventoryItem(id, updatedItem).enqueue(object : Callback<RawMaterial> {
+//                    override fun onResponse(call: Call<RawMaterial>, response: Response<RawMaterial>) {
+//                        if (response.isSuccessful) {
+//                            Toast.makeText(this@InventoryActivity, "Stock Added Successfully", Toast.LENGTH_SHORT).show()
+//                            binding.etSearchInventory.text.clear() // Clear search on success
+//                            fetchInventory()
+//                        }
+//                    }
+//                    override fun onFailure(call: Call<RawMaterial>, t: Throwable) {
+//                        Toast.makeText(this@InventoryActivity, "Update failed", Toast.LENGTH_SHORT).show()
+//                    }
+//                })
+//            }
+//        }
 
         builder.setNegativeButton("Cancel", null)
 

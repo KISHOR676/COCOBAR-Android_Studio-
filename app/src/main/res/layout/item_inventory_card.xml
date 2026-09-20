@@ -17,15 +17,27 @@
         android:padding="12dp">
 
         <!-- NEW: Image Box -->
-        <ImageView
-            android:id="@+id/ivItemImage"
+
+        <!-- NEW: Added ID to the wrapper card so ConstraintLayout can anchor to it -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardItemImage"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:background="#F5F0E6"
-            android:scaleType="centerCrop"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp"
+            app:strokeWidth="0dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <ImageView
+                android:id="@+id/ivItemImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#F5F0E6"
+                android:scaleType="centerCrop" />
+
+        </com.google.android.material.card.MaterialCardView>
 
         <TextView
             android:id="@+id/tvItemName"
@@ -37,7 +49,7 @@
             android:textStyle="bold"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            app:layout_constraintStart_toEndOf="@id/ivItemImage"
+            app:layout_constraintStart_toEndOf="@id/cardItemImage"
             app:layout_constraintEnd_toStartOf="@id/tvItemPrice"
             app:layout_constraintTop_toTopOf="parent"/>
 

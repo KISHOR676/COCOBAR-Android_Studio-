@@ -31,16 +31,28 @@ class RecipeAdapter(
         holder.tvPrice.text = "₹ ${recipe.sellingPrice}"
         holder.tvCount.text = "Contains ${recipe.ingredients.size} ingredients"
 
-        // NEW: Load Image if available
-        if (!recipe.imageUrl.isNullOrEmpty()) {
-            try {
-                holder.ivImage.setImageURI(android.net.Uri.parse(recipe.imageUrl))
-            } catch (e: Exception) {
-                holder.ivImage.setImageResource(android.R.drawable.ic_menu_gallery)
-            }
+        // Load Image securely using Glide
+        if (!recipe.imageUrl.isNullOrBlank()) {
+            com.bumptech.glide.Glide.with(holder.itemView.context)
+                .load(recipe.imageUrl)
+                .placeholder(android.R.drawable.ic_menu_gallery)
+                .error(android.R.drawable.ic_menu_gallery)
+                .centerCrop()
+                .into(holder.ivImage)
         } else {
-            holder.ivImage.setImageResource(android.R.drawable.ic_menu_gallery) // Fallback placeholder
+            holder.ivImage.setImageResource(android.R.drawable.ic_menu_gallery)
         }
+
+//        // NEW: Load Image if available
+//        if (!recipe.imageUrl.isNullOrEmpty()) {
+//            try {
+//                holder.ivImage.setImageURI(android.net.Uri.parse(recipe.imageUrl))
+//            } catch (e: Exception) {
+//                holder.ivImage.setImageResource(android.R.drawable.ic_menu_gallery)
+//            }
+//        } else {
+//            holder.ivImage.setImageResource(android.R.drawable.ic_menu_gallery) // Fallback placeholder
+//        }
 
         holder.itemView.setOnClickListener {
             onItemClick(recipe)

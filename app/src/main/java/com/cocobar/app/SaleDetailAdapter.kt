@@ -45,17 +45,29 @@ class SaleDetailAdapter(private val items: List<SaleDetailDTO>) : RecyclerView.A
             holder.tvSaleTime.text = item.saleDate
         }
 
-        // Safe Image Loading
-        holder.ivProductImage.setImageResource(android.R.drawable.ic_menu_gallery)
-        item.imageUrl?.let { urlString ->
-            if (urlString.isNotBlank()) {
-                try {
-                    holder.ivProductImage.setImageURI(Uri.parse(urlString))
-                } catch (e: Exception) {
-                    holder.ivProductImage.setImageResource(android.R.drawable.ic_menu_gallery)
-                }
-            }
+        // Load Image securely using Glide
+        if (!item.imageUrl.isNullOrBlank()) {
+            com.bumptech.glide.Glide.with(holder.itemView.context)
+                .load(item.imageUrl)
+                .placeholder(android.R.drawable.ic_menu_gallery)
+                .error(android.R.drawable.ic_menu_gallery)
+                .centerCrop()
+                .into(holder.ivProductImage)
+        } else {
+            holder.ivProductImage.setImageResource(android.R.drawable.ic_menu_gallery)
         }
+
+//        // Safe Image Loading
+//        holder.ivProductImage.setImageResource(android.R.drawable.ic_menu_gallery)
+//        item.imageUrl?.let { urlString ->
+//            if (urlString.isNotBlank()) {
+//                try {
+//                    holder.ivProductImage.setImageURI(Uri.parse(urlString))
+//                } catch (e: Exception) {
+//                    holder.ivProductImage.setImageResource(android.R.drawable.ic_menu_gallery)
+//                }
+//            }
+//        }
     }
 
     override fun getItemCount() = items.size

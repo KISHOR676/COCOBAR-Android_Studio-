@@ -24,14 +24,32 @@ class AddInventoryItemActivity : AppCompatActivity() {
     // Standard Android Image Picker logic
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         if (uri != null) {
+            // CRITICAL FIX: Persist permission so the image continues to work across the app and after restarts
+            contentResolver.takePersistableUriPermission(uri, android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
             selectedImageUri = uri
-            // Fix: Use setImageURI directly, but ensure the scale type is correct
-            binding.ivItemImage.scaleType = android.widget.ImageView.ScaleType.CENTER_CROP
-            binding.ivItemImage.setImageURI(null) // Reset first
-            binding.ivItemImage.setImageURI(uri) // Show selected image in the UI
-            binding.ivItemImage.setPadding(0, 0, 0, 0) // Remove padding to fit the image nicely
+
+            // Display the selected image securely using Glide
+            com.bumptech.glide.Glide.with(this)
+                .load(uri)
+                .centerCrop()
+                .into(binding.ivItemImage)
+
+            binding.ivItemImage.setPadding(0, 0, 0, 0)
         }
     }
+
+    // Standard Android Image Picker logic
+//    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+//        if (uri != null) {
+//            selectedImageUri = uri
+//            // Fix: Use setImageURI directly, but ensure the scale type is correct
+//            binding.ivItemImage.scaleType = android.widget.ImageView.ScaleType.CENTER_CROP
+//            binding.ivItemImage.setImageURI(null) // Reset first
+//            binding.ivItemImage.setImageURI(uri) // Show selected image in the UI
+//            binding.ivItemImage.setPadding(0, 0, 0, 0) // Remove padding to fit the image nicely
+//        }
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,6 +104,7 @@ class AddInventoryItemActivity : AppCompatActivity() {
 
         val initialQty = quantityStr.toDoubleOrNull() ?: 0.0
         val lowLimit = lowLimitStr.toDoubleOrNull() ?: 0.0
+        val totalPaid = priceStr.toDoubleOrNull() ?: 0.0 // The total amount user paid
 
         // LOGIC CHECK: Ensure low limit is strictly less than initial quantity
         if (lowLimit >= initialQty) {
@@ -93,19 +112,44 @@ class AddInventoryItemActivity : AppCompatActivity() {
             return // Stop the save process
         }
 
-        // Convert the optional Image URI to a string if it exists
+        // NEW MATH: Calculate the price for 1 unit (Total Price / Total Quantity)
+        // Checks if initialQty > 0 to prevent division by zero crash
+        val calculatedUnitPrice = if (initialQty > 0) totalPaid / initialQty else 0.0
+
         val imageUrlString = selectedImageUri?.toString()
 
-        // Create the data object with all 8 requirements
         val newItem = RawMaterial(
-            imageUrl = imageUrlString, // 2. Optional Image
-            itemName = name,           // 3. Item Name
-            unitType = unit,           // 4. Quantity (kg/grams)
-            dateAdded = currentDateString, // 5. Date added (Auto)
-            currentQuantity = quantityStr.toDoubleOrNull() ?: 0.0, // 6. Current Quantity
-            lowStockLimit = lowLimitStr.toDoubleOrNull() ?: 0.0,   // 7. Low Limit
-            unitPrice = priceStr.toDoubleOrNull() ?: 0.0           // 8. Price
+            imageUrl = imageUrlString,
+            itemName = name,
+            unitType = unit,
+            dateAdded = currentDateString,
+            currentQuantity = initialQty,
+            lowStockLimit = lowLimit,
+            unitPrice = calculatedUnitPrice // Sent to backend as the true 1-unit cost
         )
+
+//        val initialQty = quantityStr.toDoubleOrNull() ?: 0.0
+//        val lowLimit = lowLimitStr.toDoubleOrNull() ?: 0.0
+//
+//        // LOGIC CHECK: Ensure low limit is strictly less than initial quantity
+//        if (lowLimit >= initialQty) {
+//            Toast.makeText(this, "Low Stock Limit must be less than Initial Quantity", Toast.LENGTH_LONG).show()
+//            return // Stop the save process
+//        }
+//
+//        // Convert the optional Image URI to a string if it exists
+//        val imageUrlString = selectedImageUri?.toString()
+//
+//        // Create the data object with all 8 requirements
+//        val newItem = RawMaterial(
+//            imageUrl = imageUrlString, // 2. Optional Image
+//            itemName = name,           // 3. Item Name
+//            unitType = unit,           // 4. Quantity (kg/grams)
+//            dateAdded = currentDateString, // 5. Date added (Auto)
+//            currentQuantity = quantityStr.toDoubleOrNull() ?: 0.0, // 6. Current Quantity
+//            lowStockLimit = lowLimitStr.toDoubleOrNull() ?: 0.0,   // 7. Low Limit
+//            unitPrice = priceStr.toDoubleOrNull() ?: 0.0           // 8. Price
+//        )
 
         // Send to Spring Boot Backend
         CocobarApi.create(this).addInventoryItem(newItem).enqueue(object : Callback<RawMaterial> {

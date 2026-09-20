@@ -27,34 +27,79 @@ class InventoryAdapter(
         return InventoryViewHolder(view)
     }
 
+//    override fun onBindViewHolder(holder: InventoryViewHolder, position: Int) {
+//        val item = inventoryList[position]
+//        holder.tvName.text = item.itemName
+//        holder.tvPrice.text = "₹ ${item.unitPrice}"
+//        holder.tvQuantity.text = "Stock: ${item.currentQuantity} ${item.unitType}"
+//
+//        // SAFE IMAGE LOADING TO PREVENT ContentProvider CRASHES
+//        holder.ivImage.setImageResource(android.R.drawable.ic_menu_gallery) // Default fallback
+//
+//        item.imageUrl?.let { urlString ->
+//            if (urlString.isNotBlank()) {
+//                try {
+//                    val uri = Uri.parse(urlString)
+//                    // Only try loading content URI if accessible; catch permission errors
+//                    holder.ivImage.setImageURI(uri)
+//                } catch (e: Exception) {
+//                    // Fallback to placeholder if the URI belongs to another device
+//                    holder.ivImage.setImageResource(android.R.drawable.ic_menu_gallery)
+//                }
+//            }
+//        }
+//
+////        // NEW: Load Image if available
+////        if (!item.imageUrl.isNullOrEmpty()) {
+////            holder.ivImage.setImageURI(Uri.parse(item.imageUrl))
+////        } else {
+////            holder.ivImage.setImageResource(android.R.drawable.ic_menu_gallery) // Fallback placeholder
+////        }
+//
+//        // Trigger update popup when clicked
+//        holder.itemView.setOnClickListener {
+//            onItemClick(item)
+//        }
+//    }
+
     override fun onBindViewHolder(holder: InventoryViewHolder, position: Int) {
         val item = inventoryList[position]
         holder.tvName.text = item.itemName
-        holder.tvPrice.text = "₹ ${item.unitPrice}"
+
+        // NEW MATH: Calculate the total financial value of the remaining stock
+        val totalStockValue = item.currentQuantity * item.unitPrice
+        holder.tvPrice.text = "₹ ${String.format("%.1f", totalStockValue)}"
+
         holder.tvQuantity.text = "Stock: ${item.currentQuantity} ${item.unitType}"
 
-        // SAFE IMAGE LOADING TO PREVENT ContentProvider CRASHES
-        holder.ivImage.setImageResource(android.R.drawable.ic_menu_gallery) // Default fallback
-
-        item.imageUrl?.let { urlString ->
-            if (urlString.isNotBlank()) {
-                try {
-                    val uri = Uri.parse(urlString)
-                    // Only try loading content URI if accessible; catch permission errors
-                    holder.ivImage.setImageURI(uri)
-                } catch (e: Exception) {
-                    // Fallback to placeholder if the URI belongs to another device
-                    holder.ivImage.setImageResource(android.R.drawable.ic_menu_gallery)
-                }
-            }
-        }
-
-//        // NEW: Load Image if available
-//        if (!item.imageUrl.isNullOrEmpty()) {
-//            holder.ivImage.setImageURI(Uri.parse(item.imageUrl))
-//        } else {
-//            holder.ivImage.setImageResource(android.R.drawable.ic_menu_gallery) // Fallback placeholder
+//        // SAFE IMAGE LOADING TO PREVENT ContentProvider CRASHES
+//        holder.ivImage.setImageResource(android.R.drawable.ic_menu_gallery) // Default fallback
+//
+//        item.imageUrl?.let { urlString ->
+//            if (urlString.isNotBlank()) {
+//                try {
+//                    val uri = Uri.parse(urlString)
+//                    // Only try loading content URI if accessible; catch permission errors
+//                    holder.ivImage.setImageURI(uri)
+//                } catch (e: Exception) {
+//                    // Fallback to placeholder if the URI belongs to another device
+//                    holder.ivImage.setImageResource(android.R.drawable.ic_menu_gallery)
+//                }
+//            }
 //        }
+
+        // Load image using Glide
+        if (!item.imageUrl.isNullOrBlank()) {
+            com.bumptech.glide.Glide.with(holder.itemView.context)
+                .load(item.imageUrl)
+                .placeholder(android.R.drawable.ic_menu_gallery) // Shows while loading
+                .error(android.R.drawable.ic_menu_gallery)       // Shows if permission fails
+                .centerCrop()
+                .into(holder.ivImage)
+        } else {
+            // Fallback if the database has no image URL
+            holder.ivImage.setImageResource(android.R.drawable.ic_menu_gallery)
+        }
 
         // Trigger update popup when clicked
         holder.itemView.setOnClickListener {
