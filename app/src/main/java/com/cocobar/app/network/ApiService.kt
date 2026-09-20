@@ -9,6 +9,7 @@ data class DashboardSummary(
     val todaysSales: Double,
     val todaysProfit: Double,
     val lowStockItems: Long,
+    val totalProducts: Int,
     val salesGraphData: List<Map<String, Any>>?
 )
 

@@ -142,9 +142,9 @@
                 android:orientation="horizontal"
                 android:baselineAligned="false">
 
-                <!-- Today's Profit Card -->
+                <!-- Sell Products Card -->
                 <LinearLayout
-                    android:id="@+id/card_profit"
+                    android:id="@+id/card_product"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -153,10 +153,15 @@
                     android:orientation="vertical"
                     android:padding="16dp">
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Today's Profit" android:textColor="@color/coco_text_light"/>
-                    <TextView android:id="@+id/tv_todays_profit" android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:text="₹ --"
-                        android:textSize="24sp" android:textStyle="bold" android:textColor="@color/white"/>
+                        android:text="Total Products" android:textColor="@color/coco_text_light"/>
+                    <TextView
+                        android:id="@+id/tv_total_products"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="--"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"/>
                 </LinearLayout>
 
                 <!-- Low Stock Card -->
@@ -170,7 +175,7 @@
                     android:orientation="vertical"
                     android:padding="16dp">
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Low Stock Items" android:textColor="@color/coco_text_light"/>
+                        android:text="Low Stock" android:textColor="@color/coco_text_light"/>
                     <TextView android:id="@+id/tv_low_stock" android:layout_width="wrap_content"
                         android:layout_height="wrap_content" android:text="--"
                         android:textSize="24sp" android:textStyle="bold" android:textColor="#D32F2F"/>

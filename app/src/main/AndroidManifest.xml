@@ -17,8 +17,14 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".SplashActivity"
-            android:exported="false"
-            android:theme="@style/Theme.COCOBAR" />
+            android:exported="true"
+            android:theme="@style/Theme.COCOBAR">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".RegisterActivity"
@@ -86,18 +92,15 @@
         <!-- The app will now start here -->
         <activity
             android:name=".DashboardActivity"
-            android:exported="true"
-            android:windowSoftInputMode="adjustResize">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
 
     </application>
 
-</manifest> <!-- <?xml version="1.0" encoding="utf-8"?> -->
+</manifest>
+
+    <!-- <?xml version="1.0" encoding="utf-8"?> -->
     <!-- <manifest xmlns:android="http://schemas.android.com/apk/res/android" -->
     <!-- xmlns:tools="http://schemas.android.com/tools"> -->
     <!-- &lt;!&ndash; Crucial for communicating with backend &ndash;&gt; -->

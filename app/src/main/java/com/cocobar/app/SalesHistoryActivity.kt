@@ -1,6 +1,5 @@
 package com.cocobar.app
 
-import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -12,6 +11,7 @@ import com.cocobar.app.databinding.ActivitySalesHistoryBinding
 import com.cocobar.app.network.CocobarApi
 import com.cocobar.app.network.DailySaleDTO
 import com.cocobar.app.network.SalesOverviewDTO
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.navigation.NavigationView
 import retrofit2.Call
 import retrofit2.Callback
@@ -23,7 +23,6 @@ class SalesHistoryActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySalesHistoryBinding
     private lateinit var drawerLayout: DrawerLayout
-    private val calendar = Calendar.getInstance()
 
     private var startDateStr = getFormattedDate(-7)
     private var endDateStr = getFormattedDate(0)
@@ -33,10 +32,8 @@ class SalesHistoryActivity : AppCompatActivity() {
         binding = ActivitySalesHistoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 1. Setup the Sidebar
         setupNavigationDrawer()
 
-        // 2. Setup the rest of the UI
         binding.btnOpenTopSelling.setOnClickListener {
             startActivity(Intent(this, TopSellingActivity::class.java))
         }
@@ -46,13 +43,25 @@ class SalesHistoryActivity : AppCompatActivity() {
         updateDateUI()
         fetchAllData()
 
+        // UPDATED: Now uses Material Date Range Picker
         binding.btnDateFilter.setOnClickListener {
-            showDatePicker { selectedDate ->
-                startDateStr = selectedDate
-                endDateStr = selectedDate
+            val builder = MaterialDatePicker.Builder.dateRangePicker()
+            builder.setTitleText("Select Date Range")
+            val picker = builder.build()
+
+            picker.addOnPositiveButtonClickListener { selection ->
+                // The selection returns a Pair of Long values (timestamps in UTC)
+                val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                sdf.timeZone = TimeZone.getTimeZone("UTC") // Fixes off-by-one day bugs
+
+                startDateStr = sdf.format(Date(selection.first))
+                endDateStr = sdf.format(Date(selection.second))
+
                 updateDateUI()
                 fetchAllData()
             }
+
+            picker.show(supportFragmentManager, "DATE_RANGE_PICKER")
         }
     }
 
@@ -85,8 +94,6 @@ class SalesHistoryActivity : AppCompatActivity() {
             override fun onResponse(call: Call<List<DailySaleDTO>>, response: Response<List<DailySaleDTO>>) {
                 if (response.isSuccessful) {
                     val data = response.body() ?: emptyList()
-
-                    // UPDATED: Pass the click listener into the adapter to open the detail page
                     binding.rvDailySales.adapter = DailySaleAdapter(data) { clickedDate ->
                         val intent = Intent(this@SalesHistoryActivity, DailySalesDetailActivity::class.java)
                         intent.putExtra("SELECTED_DATE", clickedDate)
@@ -98,14 +105,6 @@ class SalesHistoryActivity : AppCompatActivity() {
                 Toast.makeText(this@SalesHistoryActivity, "Failed to load daily sales", Toast.LENGTH_SHORT).show()
             }
         })
-    }
-
-    private fun showDatePicker(onDateSelected: (String) -> Unit) {
-        val datePicker = DatePickerDialog(this, { _, year, month, day ->
-            val formatted = String.format("%04d-%02d-%02d", year, month + 1, day)
-            onDateSelected(formatted)
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
-        datePicker.show()
     }
 
     private fun getFormattedDate(offsetDays: Int): String {
@@ -176,7 +175,11 @@ class SalesHistoryActivity : AppCompatActivity() {
                     finish()
                 }
                 R.id.nav_settings -> {
-                    Toast.makeText(this, "Opening Settings...", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, SettingsActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    startActivity(intent)
+                    overridePendingTransition(0, 0)
+                    finish()
                 }
             }
             drawerLayout.closeDrawers()
@@ -195,4 +198,3 @@ class SalesHistoryActivity : AppCompatActivity() {
         }
     }
 }
-

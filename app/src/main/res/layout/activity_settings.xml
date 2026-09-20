@@ -29,53 +29,148 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="24dp"
+                android:gravity="center_horizontal">
 
-                <!-- 1. Account Info -->
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Account Profile" android:textStyle="bold" android:textColor="#312018" android:layout_marginBottom="8dp"/>
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:background="@color/white" android:padding="16dp" android:orientation="vertical" android:elevation="2dp">
-                    <EditText android:id="@+id/etDisplayName" android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:hint="Display Name (e.g., Cocobar)" android:padding="12dp" android:background="#F4EBDD"/>
-                    <Button android:id="@+id/btnSaveName" android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:text="Update Name" android:backgroundTint="#4E2B1D" android:textColor="@color/white" android:layout_marginTop="8dp"/>
+                <!-- Logo & Header -->
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/ic_cocobar_logo"
+                    android:layout_marginBottom="16dp" /> <!-- Replace with your actual logo drawable -->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Account &amp; App Settings"
+                    android:textColor="#312018"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Manage your profile, server and security preferences"
+                    android:textColor="#594A42"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="32dp" />
+
+                <!-- 1. Profile Name Option -->
+                <LinearLayout
+                    android:id="@+id/ll_option_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_rounded_white"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp"
+                    android:elevation="2dp">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@android:drawable/ic_menu_myplaces"
+                        android:background="#E8DEF8"
+                        android:padding="8dp"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="16dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Profile Name" android:textColor="#312018" android:textStyle="bold" android:textSize="16sp"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="View and update your display name" android:textColor="#888888" android:textSize="12sp"/>
+                    </LinearLayout>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=">" android:textStyle="bold" android:textSize="20sp" android:textColor="#312018"/>
                 </LinearLayout>
 
-                <!-- 2. Network Config -->
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Server Configuration" android:textStyle="bold" android:textColor="#312018" android:layout_marginTop="24dp" android:layout_marginBottom="8dp"/>
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:background="@color/white" android:padding="16dp" android:orientation="vertical" android:elevation="2dp">
-                    <EditText android:id="@+id/etServerIp" android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:hint="http://192.168.x.x:8080" android:padding="12dp" android:background="#F4EBDD"/>
-                    <Button android:id="@+id/btnSaveIp" android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:text="Save Server IP" android:backgroundTint="#4E2B1D" android:textColor="@color/white" android:layout_marginTop="8dp"/>
+                <!-- 2. Server IP Option -->
+                <LinearLayout
+                    android:id="@+id/ll_option_ip"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_rounded_white"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp"
+                    android:elevation="2dp">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@android:drawable/ic_menu_manage"
+                        android:background="#D1E7DD"
+                        android:padding="8dp"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="16dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Server IP Address" android:textColor="#312018" android:textStyle="bold" android:textSize="16sp"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="View and update your server IP address" android:textColor="#888888" android:textSize="12sp"/>
+                    </LinearLayout>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=">" android:textStyle="bold" android:textSize="20sp" android:textColor="#312018"/>
                 </LinearLayout>
 
-                <!-- 3. Security -->
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Security" android:textStyle="bold" android:textColor="#312018" android:layout_marginTop="24dp" android:layout_marginBottom="8dp"/>
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:background="@color/white" android:padding="16dp" android:orientation="vertical" android:elevation="2dp">
-                    <EditText android:id="@+id/etOldPassword" android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:hint="Current Password" android:inputType="textPassword" android:padding="12dp" android:background="#F4EBDD" android:layout_marginBottom="8dp"/>
-                    <EditText android:id="@+id/etNewPassword" android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:hint="New Password" android:inputType="textPassword" android:padding="12dp" android:background="#F4EBDD"/>
-                    <Button android:id="@+id/btnChangePassword" android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:text="Change Password" android:backgroundTint="#388E3C" android:textColor="@color/white" android:layout_marginTop="8dp"/>
+                <!-- 3. Change Password Option -->
+                <LinearLayout
+                    android:id="@+id/ll_option_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_rounded_white"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="32dp"
+                    android:elevation="2dp">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@android:drawable/ic_lock_idle_lock"
+                        android:background="#E2D3F5"
+                        android:padding="8dp"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="16dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Change Password" android:textColor="#312018" android:textStyle="bold" android:textSize="16sp"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Update your account password" android:textColor="#888888" android:textSize="12sp"/>
+                    </LinearLayout>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=">" android:textStyle="bold" android:textSize="20sp" android:textColor="#312018"/>
                 </LinearLayout>
 
-                <!-- 4. Sync Status -->
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="System Status" android:textStyle="bold" android:textColor="#312018" android:layout_marginTop="24dp" android:layout_marginBottom="8dp"/>
-                <TextView android:id="@+id/tvSyncStatus" android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:text="Last Synced: Just Now" android:padding="16dp" android:background="@color/white" android:elevation="2dp" android:textColor="#594A42" android:layout_marginBottom="24dp"/>
+                <!-- Footer Security Note -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_secure"/>
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginStart="12dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Your security is important" android:textColor="#312018" android:textStyle="bold" android:textSize="14sp"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Keep your credentials and server information up to date." android:textColor="#594A42" android:textSize="12sp"/>
+                    </LinearLayout>
+                </LinearLayout>
 
             </LinearLayout>
         </ScrollView>
 
-        <!-- Bottom Navigation Bar Wrapper -->
         <FrameLayout
             android:id="@+id/bottom_nav_wrapper"
             android:layout_width="match_parent"

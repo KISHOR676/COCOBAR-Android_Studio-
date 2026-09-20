@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="@color/coco_main_beige">
 
-    <!-- FIXED: Changed to LinearLayout to stack items properly -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,29 +19,55 @@
             app:title="Sales History"
             app:titleTextColor="@color/coco_gold" />
 
+        <!-- UPDATED DATE FILTER UI -->
         <LinearLayout
             android:id="@+id/btnDateFilter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:padding="12dp"
-            android:background="@drawable/nav_item_bg"
+            android:padding="16dp"
+            android:background="@drawable/bg_rounded_white"
+            android:elevation="2dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
+
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:src="@android:drawable/ic_menu_my_calendar"
-                app:tint="#312018"/>
-            <TextView
-                android:id="@+id/tvDateRange"
+                android:background="#F4EBDD"
+                android:padding="4dp"
+                app:tint="#4E2B1D"/>
+
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="8dp"
-                android:text="Last 7 Days"
-                android:textColor="#312018"
-                android:textStyle="bold" />
+                android:layout_marginStart="16dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Select Date Range"
+                    android:textSize="12sp"
+                    android:textColor="#888888" />
+                <TextView
+                    android:id="@+id/tvDateRange"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Last 7 Days"
+                    android:textColor="#312018"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Change"
+                android:textColor="#D8B07D"
+                android:textStyle="bold"
+                android:textSize="14sp"/>
         </LinearLayout>
 
         <ScrollView
@@ -76,11 +101,11 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical"
-                        android:background="@color/white"
+                        android:background="@drawable/bg_rounded_white"
                         android:padding="16dp"
                         android:layout_marginEnd="8dp"
                         android:layout_marginBottom="8dp"
-                        android:elevation="4dp">
+                        android:elevation="2dp">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -102,11 +127,11 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical"
-                        android:background="@color/white"
+                        android:background="@drawable/bg_rounded_white"
                         android:padding="16dp"
                         android:layout_marginStart="8dp"
                         android:layout_marginBottom="8dp"
-                        android:elevation="4dp">
+                        android:elevation="2dp">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -135,10 +160,10 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical"
-                        android:background="@color/white"
+                        android:background="@drawable/bg_rounded_white"
                         android:padding="16dp"
                         android:layout_marginEnd="8dp"
-                        android:elevation="4dp">
+                        android:elevation="2dp">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -160,10 +185,10 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical"
-                        android:background="@color/white"
+                        android:background="@drawable/bg_rounded_white"
                         android:padding="16dp"
                         android:layout_marginStart="8dp"
-                        android:elevation="4dp">
+                        android:elevation="2dp">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -188,14 +213,15 @@
                     android:layout_marginTop="24dp"
                     android:layout_marginBottom="24dp"
                     android:padding="16dp"
-                    android:background="#FDECE4"
+                    android:background="@drawable/bg_rounded_white"
+                    android:elevation="2dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="36dp"
                         android:layout_height="36dp"
-                        android:background="@drawable/bg_inner_form"
+                        android:background="#FDECE4"
                         android:gravity="center"
                         android:text="🏆"
                         android:textSize="18sp" />

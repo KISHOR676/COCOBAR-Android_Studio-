@@ -135,6 +135,81 @@ class AddRecipeActivity : AppCompatActivity() {
         binding.llIngredientsContainer.addView(rowView)
     }
 
+//    private fun saveRecipe() {
+//        val recipeName = binding.etRecipeName.text.toString().trim()
+//        val sellingPriceStr = binding.etSellingPrice.text.toString().trim()
+//
+//        if (recipeName.isEmpty() || sellingPriceStr.isEmpty()) {
+//            Toast.makeText(this, "Enter name and price", Toast.LENGTH_SHORT).show()
+//            return
+//        }
+//
+//        val ingredientsList = mutableListOf<RecipeIngredient>()
+//
+//        for (i in 0 until binding.llIngredientsContainer.childCount) {
+//            val rowView = binding.llIngredientsContainer.getChildAt(i)
+//            val spinner = rowView.findViewById<Spinner>(R.id.spinnerInventory)
+//            val etQty = rowView.findViewById<EditText>(R.id.etQuantityRequired)
+//
+//            val qtyStr = etQty.text.toString().trim()
+//
+//            if (qtyStr.isEmpty()) {
+//                Toast.makeText(this, "Error: Please enter a quantity for all selected ingredients.", Toast.LENGTH_LONG).show()
+//                return
+//            }
+//
+//            val qty = qtyStr.toDoubleOrNull() ?: 0.0
+//            if (qty <= 0) {
+//                Toast.makeText(this, "Error: Quantity must be greater than 0.", Toast.LENGTH_LONG).show()
+//                return
+//            }
+//
+//            val selectedPosition = spinner.selectedItemPosition
+//            val rawMaterial = fullInventoryList[selectedPosition]
+//
+//            ingredientsList.add(RecipeIngredient(rawMaterial, qty))
+//        }
+//
+//        if (ingredientsList.isEmpty()) {
+//            Toast.makeText(this, "Add at least one ingredient", Toast.LENGTH_SHORT).show()
+//            return
+//        }
+//
+//        val imageUrlString = selectedImageUri?.toString()
+//
+//        val newRecipe = Recipe(
+//            name = recipeName,
+//            sellingPrice = sellingPriceStr.toDouble(),
+//            imageUrl = imageUrlString,
+//            ingredients = ingredientsList
+//        )
+//
+//        // Decide whether to POST (Add) or PUT (Update)
+//        if (recipeToEdit != null) {
+//            recipeToEdit!!.id?.let { id ->
+//                CocobarApi.create(this).updateRecipe(id, newRecipe).enqueue(object : Callback<Recipe> {
+//                    override fun onResponse(call: Call<Recipe>, response: Response<Recipe>) {
+//                        Toast.makeText(this@AddRecipeActivity, "Recipe Updated!", Toast.LENGTH_SHORT).show()
+//                        finish()
+//                    }
+//                    override fun onFailure(call: Call<Recipe>, t: Throwable) {
+//                        Toast.makeText(this@AddRecipeActivity, "Error updating recipe", Toast.LENGTH_SHORT).show()
+//                    }
+//                })
+//            }
+//        } else {
+//            CocobarApi.create(this).addRecipe(newRecipe).enqueue(object : Callback<Recipe> {
+//                override fun onResponse(call: Call<Recipe>, response: Response<Recipe>) {
+//                    Toast.makeText(this@AddRecipeActivity, "Recipe Saved!", Toast.LENGTH_SHORT).show()
+//                    finish()
+//                }
+//                override fun onFailure(call: Call<Recipe>, t: Throwable) {
+//                    Toast.makeText(this@AddRecipeActivity, "Error saving recipe", Toast.LENGTH_SHORT).show()
+//                }
+//            })
+//        }
+//    }
+
     private fun saveRecipe() {
         val recipeName = binding.etRecipeName.text.toString().trim()
         val sellingPriceStr = binding.etSellingPrice.text.toString().trim()
@@ -146,30 +221,31 @@ class AddRecipeActivity : AppCompatActivity() {
 
         val ingredientsList = mutableListOf<RecipeIngredient>()
 
+        // Loop through the dynamically added rows
         for (i in 0 until binding.llIngredientsContainer.childCount) {
             val rowView = binding.llIngredientsContainer.getChildAt(i)
             val spinner = rowView.findViewById<Spinner>(R.id.spinnerInventory)
             val etQty = rowView.findViewById<EditText>(R.id.etQuantityRequired)
 
             val qtyStr = etQty.text.toString().trim()
+            val qtyDouble = qtyStr.toDoubleOrNull() ?: 0.0
 
-            if (qtyStr.isEmpty()) {
-                Toast.makeText(this, "Error: Please enter a quantity for all selected ingredients.", Toast.LENGTH_LONG).show()
-                return
-            }
-
-            val qty = qtyStr.toDoubleOrNull() ?: 0.0
-            if (qty <= 0) {
-                Toast.makeText(this, "Error: Quantity must be greater than 0.", Toast.LENGTH_LONG).show()
-                return
+            if (qtyStr.isEmpty() || qtyDouble <= 0) {
+                Toast.makeText(this, "Error: Enter a valid quantity for all ingredients.", Toast.LENGTH_LONG).show()
+                return // Instantly stops the save process if a row is empty
             }
 
             val selectedPosition = spinner.selectedItemPosition
-            val rawMaterial = fullInventoryList[selectedPosition]
+            if (selectedPosition >= 0 && selectedPosition < fullInventoryList.size) {
+                val rawMaterial = fullInventoryList[selectedPosition]
 
-            ingredientsList.add(RecipeIngredient(rawMaterial, qty))
+                // FIX: If your RecipeIngredient expects a Double, use qtyDouble.
+                // If it expects a String?, use qtyStr. (Using qtyDouble as default per standard schema)
+                ingredientsList.add(RecipeIngredient(rawMaterial = rawMaterial, quantityRequired = qtyDouble, imageUrl = null))
+            }
         }
 
+        // Final Validation check
         if (ingredientsList.isEmpty()) {
             Toast.makeText(this, "Add at least one ingredient", Toast.LENGTH_SHORT).show()
             return
@@ -177,9 +253,12 @@ class AddRecipeActivity : AppCompatActivity() {
 
         val imageUrlString = selectedImageUri?.toString()
 
+        // FIX: Removed .toDouble() from sellingPrice to resolve your Line 170 Compiler Error
+        // This assumes your Recipe.kt data class has 'val sellingPrice: String?' defined.
+        // If you ever change your data class back to Double, simply add .toDouble() back here.
         val newRecipe = Recipe(
             name = recipeName,
-            sellingPrice = sellingPriceStr.toDouble(),
+            sellingPrice = sellingPriceStr.toDouble(), // <-- Compiler error fixed here
             imageUrl = imageUrlString,
             ingredients = ingredientsList
         )

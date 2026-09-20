@@ -5,10 +5,9 @@
     android:id="@+id/bottom_navigation"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_inner_form"
-    app:itemIconTint="@color/bottom_nav_color"
+    android:background="@color/coco_main_beige"
+    app:itemIconTint="#211510"
     app:itemTextColor="@color/bottom_nav_color"
     app:itemActiveIndicatorStyle="@style/Widget.Material3.BottomNavigationView.ActiveIndicator"
     app:itemRippleColor="#594A42"
     app:menu="@menu/bottom_nav_menu" />
-

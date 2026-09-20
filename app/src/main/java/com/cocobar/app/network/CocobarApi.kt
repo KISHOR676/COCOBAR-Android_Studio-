@@ -123,7 +123,7 @@ interface CocobarApi {
 
     companion object {
         // Fallback URL if nothing is saved yet
-        private const val DEFAULT_BASE_URL = "http://10.30.165.69:8080/"
+        private const val DEFAULT_BASE_URL = "http://10.62.109.69:8080/"
 
         // Added 'context' parameter to read the saved IP
         fun create(context: android.content.Context): CocobarApi {
@@ -167,6 +167,7 @@ object CartManager {
 
 data class RecipeIngredient(
     val rawMaterial: RawMaterial,
+    val imageUrl: String?,
     val quantityRequired: Double
 ) : Serializable
 
